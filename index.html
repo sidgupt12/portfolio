@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="mediaquery.css" />
+</head>
+<body>
+    
+    <nav id="desktop-nav">
+        <div class="logo">Cin>>Siddhant Gupta</div>
+        <div>
+            <ul class="nav-links">
+                <li><a href="#profile">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#experience">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <nav id="hamburger-nav">
+        <div class="logo">Siddhant Gupta</div>
+        <div class="hamburger-menu ">
+            <div class="hamburger-icon" onclick="togglemenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <div class="menu-links">
+                
+                <li><a href="#profile" onclick="togglemenu()">Home</a></li>
+                <li><a href="#about" onclick="togglemenu()">About</a></li>
+                <li><a href="#experience" onclick="togglemenu()">Skills</a></li>
+                <li><a href="#projects" onclick="togglemenu()">Projects</a></li>
+                <li><a href="#contact" onclick="togglemenu()">Contact</a></li>
+            </ul>
+        </div>
+        </div>
+
+    </nav>
+    <section id="profile">
+        <div class="section__pic-container">
+            <img src="./assets/my-pic2green.png" alt="Siddhant pfp" >
+        </div>
+        <div class="section__text">
+            <p class="section__text__p1">Hello, I'm</p>
+            <h1 class="title">Siddhant Gupta</h1>
+            <p class="section__text__p2">FrontEnd Developer and Competitive Programmer</p>
+            <p class="sosbio">
+                Trainee at <a href=
+                "https://www.linkedin.com/in/team--oss/?trk=public_profile_browsemap&originalSubdomain=in"
+                class="soclinks" target="_blank">
+                Team OSS</a>
+                and Programmer at <a href=
+                "https://www.linkedin.com/company/programming-club-akgec/mycompany/"
+                class="soclinks" target="_blank">
+                Programming club</a>
+                
+            </p>
+            <div class="btn-container">
+                <button class="btn btn-color-2" onclick="window.open('./assets/resume.pdf')">Résumé</button>
+                <button class="btn btn-color-1" onclick="location.href='./#contact'">Contact Info</button>
+            </div>
+            <div id="socials-container">
+                
+                <a href="https://www.linkedin.com/in/siddhant-gupta-357184251/" target="_blank">
+                    <img src="./assets/linkedin.png" alt="Linkedin profile"  
+                class="icon ">
+                </a>
+                
+                 <a href="https://github.com/sidgupt12" target="_blank">
+                    <img src="./assets/github.png" alt="Github profile"  
+                class="icon ">
+                </a>
+            </div>
+        </div>
+        <img src="./assets/arrow.png" alt="arrow-icon" class="icon arrow"
+        onclick="location.href='./#about' " />
+    </section>
+    <section id="about">
+        <!--<p class="section__text__p1">Get To Know More</p>-->
+        <h1 class="title">So, who am I?</h1>
+        <div class="section-container">
+            <div class="about-details-container">
+                <div class="about-containers">
+                    <div class="details-container">
+                        <img src="./assets/pngegg.png" alt="Hobbies Icon"
+                        class="icon">
+                        <h3>Hobbies</h3>
+                        <p class="changecol">Video Editing <br /> Cooking</p>
+                    </div>
+                    <div class="details-container">
+                        <img src="./assets/education.png" alt="education Icon"
+                        class="icon">
+                        <h3>Education</h3>
+                        <p class="changecol">High school - 93.4% <br /> Senior School - 93.8% <br />
+                        freshmen year college - 8.2 GPA</p>
+                    </div>
+                </div>
+                <div class="text-container">
+                    <p class="aboutme">I hail from the charming town of Banda, where I spent my formative years. Ever since I was a child, video games captured my imagination, 
+                        often diverting my attention from studies. However, it all changed in 9th grade
+                         when coding was introduced into my curriculum.
+                          Suddenly, a new world of possibilities unfolded before me, and I was hooked.
+                        <br />
+                        Aside from coding, I have a passion for the culinary arts.
+                         Cooking serves as a therapeutic escape, especially during moments of stress.
+                          If you venture into my YouTube or Instagram app, you'll discover
+                           a treasure trove of cooking videos.
+                        <br />
+                        Another facet of my life involves capturing the
+                         beauty of nature and transforming those moments
+                          into cinematic masterpieces. There's something
+                           truly magical about the process of capturing
+                            nature's essence and then bringing it to life through editing.
+                        <br />
+                        Welcome to my world, where the worlds of coding,
+                         culinary arts, and cinematic storytelling converge.</p>
+                </div>
+            </div>
+        </div>
+        <img src="./assets/arrow.png" alt="arrow-icon" class="icon arrow"
+        onclick="location.href='./#experience' " />
+        
+    </section>
+    <section id="experience">
+        <p class="section__text__p1">Explore My</p>
+        <h1 class="title">Skills</h1>
+        <div class="experience-details-container">
+            <div class="about-containers">
+                <div class="details-container">
+                    <h2 class="experience-sub-title">Language</h2>
+                    <div class="article-container">
+                        <article>
+                            <img src="./assets/checkmark.png" alt="experience-icon"
+                            class="icon">
+                            <div>
+                                <h3>HTML</h3>
+                            </div>
+                        </article>
+                        <article>
+                            <img src="./assets/checkmark.png" alt="experience-icon"
+                            class="icon">
+                            <div>
+                                <h3>CSS</h3>
+                            </div>
+                        </article>
+                        <article>
+                            <img src="./assets/checkmark.png" alt="experience-icon"
+                            class="icon">
+                            <div>
+                                <h3>SQL</h3>
+                            </div>
+                        </article>
+                        <article>
+                            <img src="./assets/checkmark.png" alt="experience-icon"
+                            class="icon">
+                            <div>
+                                <h3>C/C++</h3>
+                            </div>
+                        </article>
+                        <article>
+                            <img src="./assets/checkmark.png" alt="experience-icon"
+                            class="icon">
+                            <div>
+                                <h3>Python</h3>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+                <div class="details-container">
+                    <h2 class="experience-sub-title">Dev Tools</h2>
+                    <div class="article-container">
+                        <article>
+                            <img src="./assets/checkmark.png" alt="experience-icon"
+                            class="icon">
+                            <div>
+                                <h3>Visual Studio Code</h3>
+                            </div>
+                        </article>
+                        <article>
+                            <img src="./assets/checkmark.png" alt="experience-icon"
+                            class="icon">
+                            <div>
+                                <h3>Git</h3>
+                            </div>
+                        </article>
+                        
+                    </div>
+                </div>
+            </div>  
+        </div>
+
+          
+        <img src="./assets/arrow.png" alt="arrow-icon" class="icon arrow"
+        onclick="location.href='./#projects' " />
+    </section>
+    <section id="projects">
+        <p class="section__text__p1">Browse My</p>
+        <h1 class="title">Projects</h1>
+        <div class="experience-details-container">
+            <div class="project-container">
+                <div class="details-container color-container">
+                <div class="article-container">
+                    <img src="./assets/project-1.png" alt="project1"
+                    class="project-img">
+                </div>
+                <h2 class="experience-sub-title project-title">Student Info System</h2>
+                <div class="btn-container">
+                    
+                    <a href="https://github.com/sidgupt12/oss.git" target="_blank">
+                        <button class="btn btn-color-2 project-btn">Github</button>
+                    </a>
+                </div>
+                </div>  
+            </div>
+        </div>
+        <img src="./assets/arrow.png" alt="arrow-icon" class="icon arrow"
+        onclick="location.href='./#contact' " />
+    </section>
+    <section id="contact">
+        <p class="section__text__p1">Get In Touch</p>
+        <h1 class="title">Contact Me</h1>
+        <p class="section__text__p1">sidgupt12@gmail.com</p>
+        <div class="experience-details-container">
+            <div class="about-containers">
+                <div class="details-container">
+        <form action="mailto:discuss@devalan.tech" method="post" enctype="text/plain">
+            <input type="text" name="name" placeholder="Name"> <br>
+            <input type="text" name="subject" placeholder="Subject"><br>
+            
+            <textarea name="message" placeholder="Enter Message" style="width: 502px; height: 17px;"></textarea>
+            <p></p>
+            <input class="btn btn-color-2 project-btn" type="submit" value="Send">
+         </form>
+        </div>
+    </div>  
+</div>
+
+    </section>
+    <footer>
+        <nav>
+            <div class="nav-links-container">
+                <ul class="nav-links">
+                    
+                    <li><a href="#profile">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#experience">Skills</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+        <p>Copyright &#169; 2023 Siddhant Gupta. All Rights Reserved</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
