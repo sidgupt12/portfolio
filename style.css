@@ -415,6 +415,88 @@ footer p{
     
     color:rgb(54, 184, 76) ;
 }
+.contact-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+form{
+    width: 90%;
+    max-width: 600px;
+}
+
+.input-group{
+    margin-bottom: 20px;
+    position: relative;
+}
+
+input, textarea{
+    width: 100%;
+    padding: 5px;
+    outline: 0;
+    border: 1px solid rgb(54, 184, 76);
+    color: rgb(54, 184, 76);
+    background: transparent;
+    font-size: 15px;
+}
+label{
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: 5px;
+    color: rgb(54, 184, 76);
+    cursor: text;
+    transition: 0.2s;
+}
+input:focus~label,
+input:valid~label, 
+textarea:focus~label,
+textarea:valid~label
+{
+    top: -25px;
+    font-size: 10px;
+
+}
+
+.row{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+}
+.row .input-group{
+    flex-basis: 48%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
