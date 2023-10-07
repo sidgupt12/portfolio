@@ -1,3 +1,14 @@
+@media screen and (max-width: 1400px){
+    #profile{
+        height: 83vh;
+        margin-bottom: 6rem;    
+    }
+    .about-containers{
+        flex-wrap: wrap;
+    } 
+}
+
+
 @media screen and (max-width: 1200px){
     #desktop-nav{
         display: none;
@@ -6,5 +17,72 @@
     #hamburger-nav{
         display: flex;
     }
-}
+    #experience, .experience-details-container{
+        margin-top: 2rem;
 
+    }
+    #profile, .section-container{
+        display: block;
+    }
+    .arrow{
+        display: none;
+    }
+    section, .section-container{
+        height: fit-content;
+    }
+    section{
+        margin: 0 5%;
+    }
+    .section__pic-container{
+        width: 275px;
+        height: 275px;
+        margin: 0 auto 2rem;
+    }
+    .about-containers{
+        margin-top: 0;
+    }
+    .project-container{
+        display: inline;    
+    }
+}
+@media screen and (max-width: 600px){
+    body{
+        margin-left: 4vh;
+    }
+    #contact{
+        height: 40vh;
+
+    }
+    
+    #profile{
+        height: 83vh;
+        margin-bottom: 0;
+    }
+    article{
+        font-size: 1rem;
+    }
+    footer{
+        display: none;
+    }
+    .project-container{
+    
+        display: inline;
+ 
+    }
+    #about{
+        z-index: 15;
+    }
+    .aboutme{
+        margin-top: 35vh;
+        margin-bottom: 0;
+    }
+    .text-container{
+        margin-top: -25vh;
+        
+    }
+    .row{
+        display: inline;
+    }
+
+
+}
