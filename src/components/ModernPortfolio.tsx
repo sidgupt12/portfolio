@@ -282,7 +282,8 @@ export function ModernPortfolio() {
               { id: 1, label: "Experience" },
               { id: 2, label: "Projects" },
               { id: 3, label: "Skills" },
-              { id: 4, label: "Achievements" }
+              { id: 4, label: "GitHub" },
+              { id: 5, label: "Achievements" }
             ].map((section) => (
               <button
                 key={section.id}
@@ -329,42 +330,42 @@ export function ModernPortfolio() {
               {contactInfo.title}
             </p>
             <div className="flex flex-wrap justify-center gap-6 text-sm">
-              <div className="flex items-center gap-2 group cursor-pointer hover-lift">
-                <MapPin className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              <div className="flex items-center gap-2 text-muted-foreground hover:text-foreground group cursor-pointer hover-lift">
+                <MapPin className="h-4 w-4" />
                 <span>{contactInfo.location}</span>
               </div>
               <a 
                 href={`mailto:${contactInfo.email}`}
-                className="flex items-center gap-2 group cursor-pointer hover-lift"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground group cursor-pointer hover-lift"
               >
-                <Mail className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <Mail className="h-4 w-4" />
                 <span>{contactInfo.email}</span>
               </a>
               <a 
                 href={`https://${contactInfo.linkedin}`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 group cursor-pointer hover-lift"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground group cursor-pointer hover-lift"
               >
-                <Linkedin className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <Linkedin className="h-4 w-4" />
                 <span>{contactInfo.linkedin}</span>
               </a>
               <a 
                 href={`https://${contactInfo.github}`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 group cursor-pointer hover-lift"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground group cursor-pointer hover-lift"
               >
-                <Github className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <Github className="h-4 w-4" />
                 <span>{contactInfo.github}</span>
               </a>
               <a 
                 href={contactInfo.resume} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 group cursor-pointer hover-lift"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground group cursor-pointer hover-lift"
               >
-                <FileText className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                <FileText className="h-4 w-4" />
                 <span>View Resume</span>
               </a>
             </div>
@@ -374,14 +375,15 @@ export function ModernPortfolio() {
 
       <div className="max-w-6xl mx-auto px-4 pb-20">
         {/* Experience Section */}
+        {/* About Section */}
         <section className="mb-32">
           <div 
             data-section="1"
-            className={`transition-all duration-1000 delay-200 ${
-              visibleSections.has(1) ? 'animate-slide-up' : 'opacity-0 translate-y-10'
+            className={`transition-all duration-1000 delay-100 ${
+              visibleSections.has(1) ? 'animate-fade-in' : 'opacity-0'
             }`}
           >
-            <h2 className="text-4xl font-bold mb-16 text-center">Experience</h2>
+            <h2 className="text-4xl font-bold mb-16 text-center">About Me</h2>
             <div className="max-w-4xl mx-auto space-y-12">
               {experience.map((exp, index) => (
                 <div key={index} className="flex flex-col md:flex-row items-center gap-8 py-8">
@@ -429,7 +431,7 @@ export function ModernPortfolio() {
         <section className="mb-32">
           <div 
             data-section="2"
-            className={`transition-all duration-1000 delay-400 ${
+            className={`transition-all duration-1000 delay-100 ${
               visibleSections.has(2) ? 'animate-slide-up' : 'opacity-0 translate-y-10'
             }`}
           >
@@ -541,7 +543,7 @@ export function ModernPortfolio() {
         <section className="mb-32">
           <div 
             data-section="3"
-            className={`transition-all duration-1000 delay-600 ${
+            className={`transition-all duration-1000 delay-100 ${
               visibleSections.has(3) ? 'animate-scale-in' : 'opacity-0 scale-95'
             }`}
           >
@@ -564,12 +566,36 @@ export function ModernPortfolio() {
           </div>
         </section>
 
-        {/* Achievements Section */}
+        {/* GitHub Contribution Section */}
         <section className="mb-32">
           <div 
             data-section="4"
-            className={`transition-all duration-1000 delay-800 ${
+            className={`transition-all duration-1000 delay-100 ${
               visibleSections.has(4) ? 'animate-fade-in' : 'opacity-0'
+            }`}
+          >
+            <h2 className="text-4xl font-bold mb-16 text-center">GitHub Contribution</h2>
+            <div className="max-w-5xl mx-auto">
+              <Card className="hover-lift border-0 shadow-xl overflow-hidden">
+                <CardContent className="p-6">
+                  <img 
+                    src={`https://ghchart.rshah.org/sidgupt12`}
+                    alt="GitHub Contribution Graph"
+                    className="w-full h-auto rounded-lg"
+                    loading="lazy"
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Achievements Section */}
+        <section className="mb-32">
+          <div 
+            data-section="5"
+            className={`transition-all duration-1000 delay-100 ${
+              visibleSections.has(5) ? 'animate-fade-in' : 'opacity-0'
             }`}
           >
             <h2 className="text-4xl font-bold mb-16 text-center">Achievements & Leadership</h2>
