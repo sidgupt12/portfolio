@@ -9,6 +9,8 @@ import claudeGithubImage from "@/assets/claude-github-project.jpg";
 import interviewHelpImage from "@/assets/interviewhelp-project.jpg";
 import remoteLogo from "@/assets/remote-logo.jpg";
 import cartwigLogo from "@/assets/cartwig-logo.jpg";
+import infoedgeLogo from "@/assets/infoedge.png";
+import stealthLogo from "@/assets/stealth-nobg.png";
 
 export function ModernPortfolio() {
   const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set());
@@ -137,9 +139,23 @@ export function ModernPortfolio() {
 
   const experience = [
     {
-      title: "Backend Intern",
+      title: "Software Engineer Intern",
+      company: "Info Edge (Naukri.com)",
+      duration: "Jan 2026 - Present",
+      logo: infoedgeLogo,
+      type: "Noida, India",
+      technologies: ["Java", "SQL", "Redis", "Docker", "AWS", "Jira"],
+      highlights: [
+        "Built test failure listener + CI pipeline that triggers on-step failure and drives real-time locator healer with DOM inspection",
+        "Re-architected AI Test Case Generator (VIKRANT) by adding authentication, Jira validation, intelligent tag recommendations, and request-ID tracking",
+        "Engineered automation pipeline monitoring Outlook rules and Microsoft Drive, retrieving AWS results and submitting datalake forms via scheduled jobs",
+        "Analyzed user behavior across 440K+ users using complex SQL queries to identify product adoption patterns"
+      ]
+    },
+    {
+      title: "Backend Engineer Intern",
       company: "Coding Jr",
-      duration: "Jun 2025 - Present",
+      duration: "Jun 2025 - Oct 2025",
       logo: "/codingjr.webp",
       type: "Remote", 
       technologies: ["Go", "Fiber", "Redis", "MySQL", "AWS", "Docker"],
@@ -150,16 +166,17 @@ export function ModernPortfolio() {
       ]
     },
     {
-      title: "Frontend Intern",
-      company: "Cartveg", 
+      title: "Frontend Engineering Intern",
+      company: "Stealth Startup", 
       duration: "Apr 2025 - May 2025",
-      logo: null, // Will use text logo
+      logo: stealthLogo,
       type: "Remote",
       technologies: ["Next.js", "Tailwind CSS", "Clerk", "React", "TypeScript"],
       highlights: [
-        "Built admin panel with Next.js and Tailwind CSS, streamlining e-commerce operations",
+        "Built admin portal with Next.js and Tailwind CSS using JWT cookies and middleware route guards",
+        "Implemented role-based access control for admin panel improving operational efficiency",
         "Improved page load times by 30% through lazy loading and optimized asset delivery",
-        "Created reusable UI components and integrated REST APIs with Clerk authentication"
+        "Created reusable UI components and integrated REST APIs with secure authentication"
       ]
     }
   ];
@@ -203,9 +220,9 @@ export function ModernPortfolio() {
   ];
 
   const skills = {
-    languages: ["Go", "Python", "JavaScript", "TypeScript", "SQL", "C/C++"],
+    languages: ["Go", "Java", "Python", "JavaScript", "TypeScript", "SQL", "C/C++"],
     frameworks: ["Next.js", "Tailwind CSS", "Node.js", "Docker", "Git", "MongoDB", "Redis", "Pinecone", "Google Cloud", "AWS"],
-    libraries: ["React", "OpenAI SDK", "GitHub API", "Gin", "sqlc", "GORM", "Zod", "Axios", "Clerk"]
+    libraries: ["React", "Playwright", "OpenAI SDK", "GitHub API", "Gin", "sqlc", "GORM", "Zod", "Axios", "Clerk"]
   };
 
   // Flatten all skills for horizontal display
@@ -216,6 +233,11 @@ export function ModernPortfolio() {
   ];
 
   const achievements = [
+    {
+      title: "B.Tech Information Technology",
+      description: "Dr. APJ Abdul Kalam Technical University",
+      details: "CGPA: 8.4 | 2022 - 2026 | Ghaziabad"
+    },
     {
       title: "Research Publication",
       description: "Acceptance of Paper in AECE-2025, Paper ID: 314",
@@ -388,12 +410,12 @@ export function ModernPortfolio() {
               {experience.map((exp, index) => (
                 <div key={index} className="flex flex-col md:flex-row items-center gap-8 py-8">
                   <div className="flex-shrink-0">
-                    <div className="w-24 h-16 rounded-xl overflow-hidden bg-gradient-to-br from-muted/80 via-muted to-muted/60 shadow-lg flex items-center justify-center p-3 border border-muted/20">
+                    <div className="w-32 h-24 rounded-xl overflow-hidden bg-gradient-to-br from-muted/80 via-muted to-muted/60 shadow-lg flex items-center justify-center p-3 border border-muted/20">
                       {exp.logo ? (
-                        <img src={exp.logo} alt={exp.company} className="w-full h-full object-contain" />
+                        <img src={exp.logo} alt={exp.company} className={`w-full h-full ${exp.company === "Stealth Startup" ? "object-cover" : "object-contain"}`} />
                       ) : (
-                        <div className="text-sm font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                          cartveg
+                        <div className="text-sm font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                          {exp.company === "Stealth Startup" ? "Stealth" : exp.company}
                         </div>
                       )}
                     </div>
@@ -584,6 +606,7 @@ export function ModernPortfolio() {
                     className="w-full h-auto rounded-lg"
                     loading="lazy"
                   />
+                  <p className="text-xs text-muted-foreground mt-4 text-center italic">most of my commits live on org GitLab during work hours — been focused on professional projects, so personal repos have been taking a backseat lately</p>
                 </CardContent>
               </Card>
             </div>
@@ -599,7 +622,7 @@ export function ModernPortfolio() {
             }`}
           >
             <h2 className="text-4xl font-bold mb-16 text-center">Achievements & Leadership</h2>
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {achievements.map((achievement, index) => (
                 <Card key={index} className="hover-lift border-0 shadow-lg">
                   <CardContent className="p-6 text-center">
