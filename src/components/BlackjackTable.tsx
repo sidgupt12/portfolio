@@ -314,7 +314,6 @@ export function BlackjackTable({ onNavigate }: { onNavigate?: (mode: DeskMode) =
           <div>
             <span className="blackjack-header__eyebrow">TABLE № 21 · PRIVATE GAME</span>
             <SiddhantWordmark text="blackjack" />
-            <small>DEALER STANDS ON 17 · STANDARD 52-CARD GAME</small>
           </div>
           <nav className="blackjack-casino-nav" aria-label="Change table">
             <b>LEAVE TABLE</b>

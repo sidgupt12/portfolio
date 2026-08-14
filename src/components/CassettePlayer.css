@@ -109,16 +109,52 @@
 .cassette-source-switch small { font-size: 5px; font-weight: 700; letter-spacing: 0.08em; opacity: 0.7; }
 
 .cassette-deck__meter {
+  position: relative;
   display: flex;
   align-items: end;
-  gap: 3px;
-  height: 21px;
+  gap: 2px;
+  width: 91px;
+  height: 34px;
+  padding: 11px 8px 5px;
+  overflow: hidden;
+  border: 2px ridge #706d50;
+  border-radius: 3px;
+  background:
+    linear-gradient(105deg, rgb(255 255 255 / 0.2), transparent 34%),
+    #a5a676;
+  box-shadow: inset 0 0 8px rgb(43 46 29 / 0.36), 0 1px rgb(255 255 255 / 0.35);
 }
 
-.cassette-deck__meter i { width: 4px; height: 6px; background: #5b4e3f; }
-.cassette-deck.is-playing .cassette-deck__meter i { animation: cassette-meter 650ms ease-in-out infinite alternate; }
-.cassette-deck.is-playing .cassette-deck__meter i:nth-child(2n) { height: 12px; animation-delay: -200ms; }
-.cassette-deck.is-playing .cassette-deck__meter i:nth-child(3n) { height: 18px; animation-delay: -420ms; }
+.cassette-deck__meter::before {
+  content: "L  LEVEL  R";
+  position: absolute;
+  top: 2px;
+  left: 8px;
+  color: #454831;
+  font-size: 5px;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.cassette-deck__meter::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgb(255 255 255 / 0.18), transparent 32% 72%, rgb(43 46 29 / 0.08));
+}
+
+.cassette-deck__meter i {
+  width: 5px;
+  height: 4px;
+  border-radius: 1px 1px 0 0;
+  background: #333729;
+  box-shadow: 0 0 1px rgb(34 38 25 / 0.5);
+  transition: height 55ms linear;
+}
+
+.cassette-deck__meter i:nth-child(3n) { height: 7px; }
+.cassette-deck__meter i:nth-child(4n) { height: 5px; }
 
 .cassette-deck__layout {
   display: grid;
@@ -296,7 +332,37 @@
 .cassette-tape__screws i:nth-child(4) { right: 0; bottom: 0; }
 
 .cassette-controls { display: grid; grid-template-columns: 1fr auto; align-content: center; gap: 10px 12px; }
-.cassette-controls__status { grid-column: 1 / -1; min-height: 25px; padding: 8px; color: #b8c292; border: 2px inset #332a21; background: #252820; font-size: 8px; letter-spacing: 0.08em; text-align: center; }
+.cassette-controls__status {
+  position: relative;
+  grid-column: 1 / -1;
+  min-height: 29px;
+  padding: 8px 10px;
+  overflow: hidden;
+  color: #34382a;
+  border: 2px ridge #777456;
+  border-radius: 3px;
+  background:
+    linear-gradient(105deg, rgb(255 255 255 / 0.22), transparent 38%),
+    #a9aa79;
+  box-shadow: inset 0 0 9px rgb(46 49 31 / 0.34), 0 1px rgb(255 255 255 / 0.36);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-shadow: 0 1px rgb(223 224 171 / 0.35);
+}
+
+.cassette-controls__status::before {
+  content: "●";
+  position: absolute;
+  left: 10px;
+  color: #4d5138;
+  font-size: 7px;
+}
+
+.cassette-controls__status[data-mode="playing"]::before { content: "▶"; }
+.cassette-controls__status[data-mode="paused"]::before { content: "Ⅱ"; }
+.cassette-controls__status[data-mode="stopped"]::before { content: "■"; }
 .cassette-controls__time { grid-column: 1 / -1; display: flex; justify-content: space-between; font-size: 8px; font-weight: 700; }
 .cassette-controls__seek { grid-column: 1 / -1; width: 100%; accent-color: #526f83; cursor: pointer; }
 .cassette-controls__buttons { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
@@ -331,22 +397,48 @@
 .cassette-volume small { color: #665947; font-size: 4px; }
 .cassette-volume__knob {
   position: relative;
-  width: 55px;
-  height: 55px;
-  border: 4px solid #2a231d;
+  width: 58px;
+  height: 58px;
+  border: 2px solid #18130f;
   border-radius: 50%;
-  background:
-    radial-gradient(circle, #70675d 0 38%, #3c3731 40% 51%, #8c8173 53% 58%, #3c3731 60%),
-    #575049;
-  box-shadow: inset 0 0 0 8px #4b443d, 0 5px 0 #1b1713, 0 7px 9px rgb(0 0 0 / 0.38);
+  background: repeating-conic-gradient(#2b251e 0 7deg, #5c5144 7deg 12deg);
+  box-shadow:
+    inset 0 0 0 2px rgb(219 201 169 / 0.1),
+    0 5px 0 #17120e,
+    0 8px 10px rgb(0 0 0 / 0.45);
   cursor: grab;
   touch-action: none;
   transform: rotate(var(--knob-angle));
 }
 
+.cassette-volume__knob::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid #17130f;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 31%, rgb(255 255 255 / 0.14), transparent 24%),
+    radial-gradient(circle, #594e40 0 45%, #322b23 72%);
+  box-shadow: inset 0 0 9px #17120e, 0 0 0 1px rgb(218 196 160 / 0.12);
+}
+
+.cassette-volume__knob::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #958673 0 42%, #3d352c 43% 57%, #b3a48e 58%);
+  box-shadow: 0 0 0 1px #211b16;
+  transform: translate(-50%, -50%);
+}
+
 .cassette-volume__knob:active { cursor: grabbing; }
 .cassette-volume__knob:focus-visible { outline: 2px solid #d9cdb9; outline-offset: 4px; }
-.cassette-volume__knob i { position: absolute; top: 6px; left: 50%; width: 3px; height: 14px; border-radius: 2px; background: #d1b16e; transform: translateX(-50%); }
+.cassette-volume__knob i { position: absolute; top: 4px; left: 50%; z-index: 2; width: 3px; height: 15px; border-radius: 2px; background: #d8bd7d; box-shadow: 0 0 2px #1b160f; transform: translateX(-50%); }
 
 .cassette-library {
   display: grid;
@@ -374,7 +466,6 @@
 .cassette-library small { overflow: hidden; font-size: 6px; font-weight: 700; letter-spacing: 0.05em; text-overflow: ellipsis; white-space: nowrap; opacity: 0.88; }
 
 @keyframes cassette-spin { to { transform: rotate(360deg); } }
-@keyframes cassette-meter { to { height: 21px; background: var(--tape-accent); } }
 
 @media (max-width: 900px) {
   .cassette-deck__layout { grid-template-columns: 1.5fr 0.85fr; }
@@ -398,6 +489,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cassette-deck.is-playing .cassette-reel,
-  .cassette-deck.is-playing .cassette-deck__meter i { animation: none; }
+  .cassette-deck.is-playing .cassette-reel { animation: none; }
+  .cassette-deck__meter i { transition: none; }
 }

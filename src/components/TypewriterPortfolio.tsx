@@ -1,11 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type {
+  CSSProperties,
+  KeyboardEvent as ReactKeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+} from "react";
 import { ArrowUpRight, Download, Layers3, Mail, MapPin, Music2, X } from "lucide-react";
 import type { DeskMode } from "./ClassicDesk";
 import { ChromeSiddhantLogo } from "./ChromeSiddhantLogo";
 import "./TypewriterPortfolio.css";
 
 type PrintState = "idle" | "printing" | "printed" | "tearing" | "resetting";
-const TYPEWRITER_KEYS = "QWERTYUIOPASDFGHJKL".split("");
+type CutterDrag = {
+  pointerId: number;
+  startX: number;
+  maxTravel: number;
+  triggered: boolean;
+};
+const TYPEWRITER_ROWS = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"] as const;
+const TYPEWRITER_KEYS = TYPEWRITER_ROWS.join("").split("");
+const MAX_DRAFT_LENGTH = 140;
 
 function createNoiseBuffer(context: AudioContext, duration: number) {
   const frameCount = Math.ceil(context.sampleRate * duration);
@@ -133,6 +146,36 @@ function playKeyPressSound(context: AudioContext) {
   key.stop(now + 0.08);
 }
 
+function playCutterSound(context: AudioContext) {
+  const now = context.currentTime;
+  const slide = context.createBufferSource();
+  slide.buffer = createNoiseBuffer(context, 0.34);
+  const slideFilter = context.createBiquadFilter();
+  slideFilter.type = "bandpass";
+  slideFilter.frequency.setValueAtTime(2400, now);
+  slideFilter.frequency.exponentialRampToValueAtTime(1250, now + 0.32);
+  const slideGain = context.createGain();
+  slideGain.gain.setValueAtTime(0.001, now);
+  slideGain.gain.linearRampToValueAtTime(0.045, now + 0.035);
+  slideGain.gain.setValueAtTime(0.026, now + 0.22);
+  slideGain.gain.exponentialRampToValueAtTime(0.001, now + 0.34);
+  slide.connect(slideFilter).connect(slideGain).connect(context.destination);
+  slide.start(now);
+  slide.stop(now + 0.35);
+
+  const snap = context.createOscillator();
+  const snapGain = context.createGain();
+  snap.type = "triangle";
+  snap.frequency.setValueAtTime(155, now + 0.29);
+  snap.frequency.exponentialRampToValueAtTime(68, now + 0.39);
+  snapGain.gain.setValueAtTime(0.001, now + 0.29);
+  snapGain.gain.linearRampToValueAtTime(0.045, now + 0.3);
+  snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+  snap.connect(snapGain).connect(context.destination);
+  snap.start(now + 0.29);
+  snap.stop(now + 0.41);
+}
+
 const experience = [
   {
     role: "Software Development Engineer",
@@ -249,15 +292,35 @@ const skills = [
   "Playwright",
 ];
 
-export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMode) => void }) {
+export function TypewriterPortfolio({
+  isUnlocked: isTypewriterUnlocked = false,
+  onNavigate,
+  onUnlock,
+}: {
+  isUnlocked?: boolean;
+  onNavigate?: (mode: DeskMode) => void;
+  onUnlock?: () => void;
+}) {
   const [printState, setPrintState] = useState<PrintState>("idle");
   const [resumeOpen, setResumeOpen] = useState(false);
   const [pressedKey, setPressedKey] = useState<string>();
+  const [guideVisible, setGuideVisible] = useState(isTypewriterUnlocked);
+  const [draftText, setDraftText] = useState("");
+  const [cutterOffset, setCutterOffset] = useState(0);
+  const [cutterDragging, setCutterDragging] = useState(false);
+  const [cutterKeyboardRun, setCutterKeyboardRun] = useState(false);
+  const [topPaperCutting, setTopPaperCutting] = useState(false);
   const finishTimer = useRef<number>();
   const restartTimer = useRef<number>();
   const resetTimer = useRef<number>();
   const keyTimer = useRef<number>();
+  const guideTimer = useRef<number>();
+  const cutterTimer = useRef<number>();
+  const cutterReturnTimer = useRef<number>();
+  const cutterDragRef = useRef<CutterDrag>();
   const audioContextRef = useRef<AudioContext>();
+
+  const canType = isTypewriterUnlocked;
 
   const getAudioContext = useCallback(() => {
     const AudioContextConstructor = window.AudioContext;
@@ -268,6 +331,12 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
 
   const printPortfolio = useCallback(() => {
     if (["printing", "tearing", "resetting"].includes(printState)) return;
+
+    if (!isTypewriterUnlocked) {
+      window.clearTimeout(guideTimer.current);
+      onUnlock?.();
+      setGuideVisible(true);
+    }
 
     window.clearTimeout(finishTimer.current);
     window.clearTimeout(restartTimer.current);
@@ -300,7 +369,7 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
     }
 
     start();
-  }, [getAudioContext, printState]);
+  }, [getAudioContext, isTypewriterUnlocked, onUnlock, printState]);
 
   const pressTypewriterKey = useCallback((key: string) => {
     window.clearTimeout(keyTimer.current);
@@ -309,10 +378,98 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
     keyTimer.current = window.setTimeout(() => setPressedKey(undefined), 105);
   }, [getAudioContext]);
 
+  const typeDraftCharacter = useCallback((key: string, character: string) => {
+    if (!canType) return;
+    window.clearTimeout(guideTimer.current);
+    setGuideVisible(true);
+    pressTypewriterKey(key);
+    setDraftText((current) => (
+      current.length < MAX_DRAFT_LENGTH ? `${current}${character}` : current
+    ));
+  }, [canType, pressTypewriterKey]);
+
+  const cutTopPaper = useCallback(() => {
+    if (!canType || !guideVisible || topPaperCutting) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTopPaperCutting(true);
+    playCutterSound(getAudioContext());
+    window.clearTimeout(cutterTimer.current);
+    cutterTimer.current = window.setTimeout(() => {
+      setGuideVisible(false);
+      setDraftText("");
+      setTopPaperCutting(false);
+    }, reducedMotion ? 80 : 460);
+  }, [canType, getAudioContext, guideVisible, topPaperCutting]);
+
+  const resetCutterPosition = useCallback(() => {
+    cutterDragRef.current = undefined;
+    setCutterDragging(false);
+    setCutterOffset(0);
+  }, []);
+
+  const startCutterDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (!canType || !guideVisible) return;
+    const slot = event.currentTarget.parentElement;
+    if (!slot) return;
+
+    event.preventDefault();
+    setCutterOffset(0);
+    event.currentTarget.setPointerCapture(event.pointerId);
+    cutterDragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      maxTravel: Math.max(0, slot.clientWidth - event.currentTarget.offsetWidth - 16),
+      triggered: false,
+    };
+    setCutterDragging(true);
+  };
+
+  const moveCutter = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = cutterDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const nextOffset = Math.min(drag.maxTravel, Math.max(0, event.clientX - drag.startX));
+    setCutterOffset(nextOffset);
+    if (drag.maxTravel > 0 && nextOffset / drag.maxTravel >= 0.82 && !drag.triggered) {
+      drag.triggered = true;
+      cutTopPaper();
+      cutterDragRef.current = undefined;
+      setCutterDragging(false);
+      setCutterOffset(0);
+      if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+        event.currentTarget.releasePointerCapture(event.pointerId);
+      }
+    }
+  };
+
+  const releaseCutter = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const drag = cutterDragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    resetCutterPosition();
+  };
+
+  const runCutterWithKeyboard = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (!["Enter", " ", "ArrowRight"].includes(event.key)) return;
+    event.preventDefault();
+    if (!canType || !guideVisible) return;
+
+    window.clearTimeout(cutterReturnTimer.current);
+    setCutterKeyboardRun(true);
+    cutTopPaper();
+    cutterReturnTimer.current = window.setTimeout(() => setCutterKeyboardRun(false), 720);
+  };
+
   const changeObject = (nextMode: DeskMode) => {
     window.clearTimeout(finishTimer.current);
     window.clearTimeout(restartTimer.current);
     window.clearTimeout(resetTimer.current);
+    window.clearTimeout(cutterTimer.current);
+    window.clearTimeout(cutterReturnTimer.current);
     const previousAudio = audioContextRef.current;
     audioContextRef.current = undefined;
     if (previousAudio) void previousAudio.close();
@@ -321,25 +478,61 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
   };
 
   useEffect(() => {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    guideTimer.current = window.setTimeout(
+      () => setGuideVisible(true),
+      reducedMotion ? 120 : 2450,
+    );
+    return () => window.clearTimeout(guideTimer.current);
+  }, []);
+
+  useEffect(() => {
+    const resetInterruptedCutter = () => resetCutterPosition();
+    window.addEventListener("pointerup", resetInterruptedCutter);
+    window.addEventListener("pointercancel", resetInterruptedCutter);
+    window.addEventListener("blur", resetInterruptedCutter);
+    window.addEventListener("resize", resetInterruptedCutter);
+    return () => {
+      window.removeEventListener("pointerup", resetInterruptedCutter);
+      window.removeEventListener("pointercancel", resetInterruptedCutter);
+      window.removeEventListener("blur", resetInterruptedCutter);
+      window.removeEventListener("resize", resetInterruptedCutter);
+    };
+  }, [resetCutterPosition]);
+
+  useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (resumeOpen || event.repeat) return;
       const target = event.target as HTMLElement;
       if (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+      const isClickableTarget = ["A", "BUTTON"].includes(target.tagName);
 
       const typedKey = event.key.toUpperCase();
       if (TYPEWRITER_KEYS.includes(typedKey)) {
-        pressTypewriterKey(typedKey);
+        typeDraftCharacter(typedKey, event.key);
         return;
       }
 
-      if (event.key !== "Enter" || ["A", "BUTTON"].includes(target.tagName)) return;
+      if (event.key === " ") {
+        if (isClickableTarget) return;
+        event.preventDefault();
+        typeDraftCharacter("SPACE", " ");
+        return;
+      }
+
+      if (event.key === "Backspace") {
+        event.preventDefault();
+        return;
+      }
+
+      if (event.key !== "Enter" || isClickableTarget) return;
       event.preventDefault();
       printPortfolio();
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [pressTypewriterKey, printPortfolio, resumeOpen]);
+  }, [printPortfolio, resumeOpen, typeDraftCharacter]);
 
   useEffect(() => {
     if (!resumeOpen) return;
@@ -361,17 +554,73 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
       window.clearTimeout(restartTimer.current);
       window.clearTimeout(resetTimer.current);
       window.clearTimeout(keyTimer.current);
+      window.clearTimeout(guideTimer.current);
+      window.clearTimeout(cutterTimer.current);
+      window.clearTimeout(cutterReturnTimer.current);
       if (audioContextRef.current) void audioContextRef.current.close();
     },
     [],
   );
 
+  const draftLines = draftText ? Math.min(5, Math.max(1, Math.ceil(draftText.length / 28))) : 0;
+  const onboardingStyle = { "--draft-extra-height": `${draftLines * 18}px` } as CSSProperties;
+  const showTopPaper = guideVisible;
+  const showInitialGuide = guideVisible && !isTypewriterUnlocked && printState === "idle";
+
   return (
-    <main className={`typewriter-world typewriter-world--${printState}`}>
+    <main className={`typewriter-world typewriter-world--${printState}${showInitialGuide ? " typewriter-world--guided" : ""}`}>
       <div className="typewriter-ambient" aria-hidden="true" />
 
       <section className="typewriter-stage" aria-label="Portfolio typewriter">
         <div className="typewriter-machine">
+          {showTopPaper ? (
+            <aside
+              className={`typewriter-onboarding${draftText ? " is-typing" : ""}${topPaperCutting ? " is-cutting" : ""}`}
+              style={onboardingStyle}
+              aria-label="Portfolio instructions and typewriter output"
+            >
+              <div className={`typewriter-onboarding__paper${isTypewriterUnlocked ? " is-unlocked" : ""}`}>
+                <button
+                  type="button"
+                  className="typewriter-onboarding__action"
+                  onClick={(event) => {
+                    event.currentTarget.blur();
+                    printPortfolio();
+                  }}
+                  disabled={isTypewriterUnlocked}
+                  aria-hidden={isTypewriterUnlocked}
+                  aria-label="Print portfolio"
+                >
+                  <small>PERSONNEL FILE · SG/2026</small>
+                  <strong>PORTFOLIO READY</strong>
+                  <span className="typewriter-onboarding__desktop">PRESS ENTER OR CLICK HERE TO PRINT</span>
+                  <span className="typewriter-onboarding__mobile">TAP HERE TO PRINT</span>
+                </button>
+
+                <div
+                  className={`typewriter-onboarding__note${draftText ? " has-draft" : ""}`}
+                  aria-hidden={!isTypewriterUnlocked}
+                >
+                  <div className="typewriter-onboarding__prompt" aria-hidden={Boolean(draftText)}>
+                    <small>PERSONAL NOTE · SG/2026</small>
+                    <strong>TYPE ANYTHING ON THE KEYBOARD</strong>
+                    <span>SLIDE TO CUT THE PAPER</span>
+                  </div>
+                  <div className="typewriter-onboarding__draft" aria-hidden={!draftText}>
+                      <small>TYPEWRITTEN NOTE · {draftText.length}/{MAX_DRAFT_LENGTH}</small>
+                      <output className="typewriter-onboarding__copy" aria-live="polite">
+                        {draftText}<i aria-hidden="true" />
+                      </output>
+                      <span className="typewriter-onboarding__hint">ENTER PRINTS PORTFOLIO</span>
+                      <small className="typewriter-onboarding__no-backspace">
+                        NO BACKSPACE—SLIDE IT OUT AND START AGAIN. VERY ANALOG.
+                      </small>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          ) : null}
+
           <div className="typewriter-carriage" aria-hidden="true">
             <span className="typewriter-carriage__knob" />
             <span className="typewriter-carriage__rail" />
@@ -382,7 +631,7 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
             <div className="typewriter-housing__topline">
               <span>PERSONAL ARCHIVE</span>
               <ChromeSiddhantLogo />
-              <span>MODEL SG–26</span>
+              <span>OLIVETTI LETTERA 32</span>
             </div>
 
             <span className="sr-only" aria-live="polite">
@@ -395,40 +644,58 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
                     : "Portfolio machine ready"}
             </span>
 
-            <div className="typewriter-slot" aria-hidden="true">
-              <span />
+            <div
+              className={`typewriter-slot${canType && showTopPaper ? " is-ready" : " is-locked"}${cutterDragging ? " is-dragging" : ""}`}
+            >
+              <span className="typewriter-slot__track" aria-hidden="true" />
+              <button
+                type="button"
+                className={`typewriter-cutter${cutterKeyboardRun ? " is-running" : ""}`}
+                style={{ transform: `translateX(${cutterOffset}px)` }}
+                aria-label={canType && showTopPaper
+                  ? "Slide to cut the note paper"
+                  : "Print the portfolio to unlock the paper cutter"}
+                aria-disabled={!canType || !showTopPaper}
+                onPointerDown={startCutterDrag}
+                onPointerMove={moveCutter}
+                onPointerUp={releaseCutter}
+                onPointerCancel={releaseCutter}
+                onLostPointerCapture={resetCutterPosition}
+                onKeyDown={runCutterWithKeyboard}
+              >
+                <i aria-hidden="true" />
+              </button>
             </div>
 
             <div className="typewriter-keyboard">
               <div className="typewriter-keys" aria-label="Working typewriter keys">
-                {"QWERTYUIOP".split("").map((key) => (
+                {TYPEWRITER_ROWS.map((row) => (
+                  <div className="typewriter-key-row" key={row}>
+                    {row.split("").map((key) => (
+                      <button
+                        type="button"
+                        key={key}
+                        className={pressedKey === key ? "is-pressed" : ""}
+                        onClick={() => typeDraftCharacter(key, key)}
+                        disabled={!canType}
+                        aria-label={`Type ${key}`}
+                      >
+                        {key}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+                <div className="typewriter-key-row typewriter-key-row--utility">
                   <button
                     type="button"
-                    key={key}
-                    className={pressedKey === key ? "is-pressed" : ""}
-                    onPointerDown={() => pressTypewriterKey(key)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") pressTypewriterKey(key);
-                    }}
-                    aria-label={`Type ${key}`}
+                    className={`typewriter-space${pressedKey === "SPACE" ? " is-pressed" : ""}`}
+                    onClick={() => typeDraftCharacter("SPACE", " ")}
+                    disabled={!canType}
+                    aria-label="Type a space"
                   >
-                    {key}
+                    SPACE
                   </button>
-                ))}
-                {"ASDFGHJKL".split("").map((key) => (
-                  <button
-                    type="button"
-                    key={key}
-                    className={pressedKey === key ? "is-pressed" : ""}
-                    onPointerDown={() => pressTypewriterKey(key)}
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter" || event.key === " ") pressTypewriterKey(key);
-                    }}
-                    aria-label={`Type ${key}`}
-                  >
-                    {key}
-                  </button>
-                ))}
+                </div>
               </div>
 
               <div className="typewriter-object-keys" aria-label="Switch desk object">
@@ -445,26 +712,39 @@ export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMo
                 </button>
               </div>
 
-              <button
-                type="button"
-                className="typewriter-return"
-                onClick={printPortfolio}
-                disabled={["printing", "tearing", "resetting"].includes(printState)}
-                aria-label={printState === "printed" ? "Print portfolio again" : "Print portfolio"}
-              >
-                <span className="typewriter-return__arrow">↵</span>
-                <span>
-                  {printState === "printed"
-                    ? "NEW CV"
-                    : printState === "tearing"
-                      ? "TEAR"
-                      : printState === "resetting"
-                        ? "LOAD"
-                        : printState === "printing"
-                          ? "PRINTING"
-                          : "PRINT CV"}
-                </span>
-              </button>
+              <div className="typewriter-return-station">
+                <button
+                  type="button"
+                  className="typewriter-return"
+                  onClick={printPortfolio}
+                  disabled={["printing", "tearing", "resetting"].includes(printState)}
+                  aria-label={printState === "printed" ? "Print portfolio again" : "Print portfolio"}
+                >
+                  <span className="typewriter-return__arrow">↵</span>
+                  <span>
+                    {printState === "printed"
+                      ? "NEW CV"
+                      : printState === "tearing"
+                        ? "TEAR"
+                        : printState === "resetting"
+                          ? "LOAD"
+                          : printState === "printing"
+                            ? "PRINTING"
+                            : "PRINT CV"}
+                  </span>
+                </button>
+
+                {showInitialGuide ? (
+                  <span className="typewriter-guide-arrow" aria-hidden="true">
+                    <em>PRESS ENTER</em>
+                    <svg viewBox="0 0 88 46">
+                      <path d="M4 39 C32 42 55 28 72 10" />
+                      <path d="M60 13 L73 9 L69 22" />
+                    </svg>
+                  </span>
+                ) : null}
+
+              </div>
             </div>
           </div>
 

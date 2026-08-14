@@ -59,7 +59,7 @@
   height: 190px;
   transform: translateX(-50%);
   perspective: 900px;
-  animation: desk-box-arrive 1280ms ease both;
+  animation: desk-box-arrive 1280ms ease-in-out both;
 }
 
 .object-box--rear { z-index: 82; }
@@ -69,8 +69,10 @@
 .object-box__inside,
 .object-box__back-flap,
 .object-box__left-flap,
-.object-box__right-flap {
+.object-box__right-flap,
+.object-box__front-flap {
   position: absolute;
+  backface-visibility: hidden;
   border: 1px solid #3d2a1d;
   background:
     repeating-linear-gradient(0deg, rgb(86 55 33 / 0.07) 0 1px, transparent 1px 5px),
@@ -86,6 +88,7 @@
 
 .object-box__front {
   inset: 68px 0 0;
+  z-index: 4;
   display: grid;
   place-content: center;
   color: #4a2d1b;
@@ -102,8 +105,9 @@
   left: 8px;
   right: 8px;
   height: 72px;
-  transform: rotateX(58deg);
-  transform-origin: bottom;
+  transform: rotateX(78deg);
+  transform-origin: center bottom;
+  will-change: transform;
 }
 
 .object-box__left-flap,
@@ -114,8 +118,62 @@
   height: 68px;
 }
 
-.object-box__left-flap { left: 0; transform: skewY(-8deg) rotate(-4deg); transform-origin: left bottom; }
-.object-box__right-flap { right: 0; transform: skewY(8deg) rotate(4deg); transform-origin: right bottom; }
+.object-box__left-flap {
+  left: 0;
+  transform: rotateY(-76deg) translateX(-4px);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.object-box__right-flap {
+  right: 0;
+  transform: rotateY(76deg) translateX(4px);
+  transform-origin: right center;
+  will-change: transform;
+}
+
+.object-box__front-flap {
+  top: 29px;
+  right: 7px;
+  left: 7px;
+  z-index: 5;
+  height: 68px;
+  transform: rotateX(-78deg);
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+.classic-desk--packing .object-box__back-flap {
+  animation: desk-box-back-close 620ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+.classic-desk--packing .object-box__left-flap {
+  animation: desk-box-left-close 620ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+.classic-desk--packing .object-box__right-flap {
+  animation: desk-box-right-close 620ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+.classic-desk--packing .object-box__front-flap {
+  animation: desk-box-front-close 620ms cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+.classic-desk--unpacking .object-box__back-flap {
+  animation: desk-box-back-open 660ms cubic-bezier(0.16, 0.8, 0.3, 1) both;
+}
+
+.classic-desk--unpacking .object-box__left-flap {
+  animation: desk-box-left-open 660ms cubic-bezier(0.16, 0.8, 0.3, 1) both;
+}
+
+.classic-desk--unpacking .object-box__right-flap {
+  animation: desk-box-right-open 660ms cubic-bezier(0.16, 0.8, 0.3, 1) both;
+}
+
+.classic-desk--unpacking .object-box__front-flap {
+  animation: desk-box-front-open 660ms cubic-bezier(0.16, 0.8, 0.3, 1) both;
+}
 
 @keyframes desk-pack-object {
   0% { opacity: 1; transform: none; }
@@ -130,8 +188,51 @@
 }
 
 @keyframes desk-box-arrive {
-  0%, 100% { transform: translate(-50%, 115%); }
-  18%, 82% { transform: translate(-50%, 0); }
+  0% { transform: translate(-50%, 118%); }
+  16% { transform: translate(-50%, -3%); }
+  22%, 78% { transform: translate(-50%, 0); }
+  84% { transform: translate(-50%, -2%); }
+  100% { transform: translate(-50%, 118%); }
+}
+
+@keyframes desk-box-back-close {
+  0%, 42% { transform: rotateX(78deg); }
+  76%, 100% { transform: rotateX(0deg); }
+}
+
+@keyframes desk-box-left-close {
+  0%, 52% { transform: rotateY(-76deg) translateX(-4px); }
+  86%, 100% { transform: rotateY(0deg) translateX(0); }
+}
+
+@keyframes desk-box-right-close {
+  0%, 58% { transform: rotateY(76deg) translateX(4px); }
+  92%, 100% { transform: rotateY(0deg) translateX(0); }
+}
+
+@keyframes desk-box-front-close {
+  0%, 64% { transform: rotateX(-78deg); }
+  100% { transform: rotateX(0deg); }
+}
+
+@keyframes desk-box-back-open {
+  0%, 19% { transform: rotateX(0deg); }
+  56%, 100% { transform: rotateX(78deg); }
+}
+
+@keyframes desk-box-left-open {
+  0%, 13% { transform: rotateY(0deg) translateX(0); }
+  48%, 100% { transform: rotateY(-76deg) translateX(-4px); }
+}
+
+@keyframes desk-box-right-open {
+  0%, 8% { transform: rotateY(0deg) translateX(0); }
+  43%, 100% { transform: rotateY(76deg) translateX(4px); }
+}
+
+@keyframes desk-box-front-open {
+  0% { transform: rotateX(0deg); }
+  36%, 100% { transform: rotateX(-78deg); }
 }
 
 @media (max-width: 720px) {
@@ -142,5 +243,9 @@
 @media (prefers-reduced-motion: reduce) {
   .classic-desk__scene--packing,
   .classic-desk__scene--unpacking,
-  .object-box { animation-duration: 1ms; }
+  .object-box,
+  .object-box__back-flap,
+  .object-box__left-flap,
+  .object-box__right-flap,
+  .object-box__front-flap { animation-duration: 1ms; }
 }
