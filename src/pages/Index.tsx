@@ -1,12 +1,12 @@
+import { ClassicDesk } from "@/components/ClassicDesk";
 import { SignatureCurtain } from "@/components/SignatureCurtain";
-import { TypewriterPortfolio } from "@/components/TypewriterPortfolio";
 
 const Index = () => {
   return (
-    <div className="relative">
+    <>
       <SignatureCurtain />
-      <TypewriterPortfolio />
-    </div>
+      <ClassicDesk />
+    </>
   );
 };
 

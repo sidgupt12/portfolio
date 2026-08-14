@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowUpRight, Download, Mail, MapPin } from "lucide-react";
+import { ArrowUpRight, Download, Layers3, Mail, MapPin, Music2, X } from "lucide-react";
+import type { DeskMode } from "./ClassicDesk";
+import { ChromeSiddhantLogo } from "./ChromeSiddhantLogo";
 import "./TypewriterPortfolio.css";
 
 type PrintState = "idle" | "printing" | "printed" | "tearing" | "resetting";
+const TYPEWRITER_KEYS = "QWERTYUIOPASDFGHJKL".split("");
 
 function createNoiseBuffer(context: AudioContext, duration: number) {
   const frameCount = Math.ceil(context.sampleRate * duration);
@@ -103,29 +106,31 @@ function playTearSound(context: AudioContext) {
   source.stop(now + duration);
 }
 
-function TypewriterChromeLogo() {
-  return (
-    <svg
-      className="typewriter-chrome-logo"
-      viewBox="0 0 190 56"
-      role="img"
-      aria-label="Siddhant"
-    >
-      <defs>
-        <linearGradient id="machine-chrome" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#77736e" />
-          <stop offset="0.17" stopColor="#ffffff" />
-          <stop offset="0.34" stopColor="#aaa7a3" />
-          <stop offset="0.48" stopColor="#ffffff" />
-          <stop offset="0.61" stopColor="#706d69" />
-          <stop offset="0.8" stopColor="#f0eeea" />
-          <stop offset="1" stopColor="#96918c" />
-        </linearGradient>
-      </defs>
-      <text x="93" y="36" textAnchor="middle" fill="url(#machine-chrome)">siddhant</text>
-      <path d="M27 43 C72 51 129 50 165 40" pathLength="1" />
-    </svg>
-  );
+function playKeyPressSound(context: AudioContext) {
+  const now = context.currentTime;
+  const click = context.createBufferSource();
+  click.buffer = createNoiseBuffer(context, 0.055);
+  const filter = context.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.setValueAtTime(1650, now);
+  filter.Q.setValueAtTime(1.2, now);
+  const clickGain = context.createGain();
+  clickGain.gain.setValueAtTime(0.075, now);
+  clickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.055);
+  click.connect(filter).connect(clickGain).connect(context.destination);
+  click.start(now);
+  click.stop(now + 0.06);
+
+  const key = context.createOscillator();
+  const keyGain = context.createGain();
+  key.type = "triangle";
+  key.frequency.setValueAtTime(128, now);
+  key.frequency.exponentialRampToValueAtTime(74, now + 0.07);
+  keyGain.gain.setValueAtTime(0.04, now);
+  keyGain.gain.exponentialRampToValueAtTime(0.001, now + 0.075);
+  key.connect(keyGain).connect(context.destination);
+  key.start(now);
+  key.stop(now + 0.08);
 }
 
 const experience = [
@@ -244,11 +249,14 @@ const skills = [
   "Playwright",
 ];
 
-export function TypewriterPortfolio() {
+export function TypewriterPortfolio({ onNavigate }: { onNavigate?: (mode: DeskMode) => void }) {
   const [printState, setPrintState] = useState<PrintState>("idle");
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const [pressedKey, setPressedKey] = useState<string>();
   const finishTimer = useRef<number>();
   const restartTimer = useRef<number>();
   const resetTimer = useRef<number>();
+  const keyTimer = useRef<number>();
   const audioContextRef = useRef<AudioContext>();
 
   const getAudioContext = useCallback(() => {
@@ -294,24 +302,65 @@ export function TypewriterPortfolio() {
     start();
   }, [getAudioContext, printState]);
 
+  const pressTypewriterKey = useCallback((key: string) => {
+    window.clearTimeout(keyTimer.current);
+    setPressedKey(key);
+    playKeyPressSound(getAudioContext());
+    keyTimer.current = window.setTimeout(() => setPressedKey(undefined), 105);
+  }, [getAudioContext]);
+
+  const changeObject = (nextMode: DeskMode) => {
+    window.clearTimeout(finishTimer.current);
+    window.clearTimeout(restartTimer.current);
+    window.clearTimeout(resetTimer.current);
+    const previousAudio = audioContextRef.current;
+    audioContextRef.current = undefined;
+    if (previousAudio) void previousAudio.close();
+    playKeyPressSound(getAudioContext());
+    onNavigate?.(nextMode);
+  };
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Enter" || event.repeat) return;
+      if (resumeOpen || event.repeat) return;
       const target = event.target as HTMLElement;
-      if (["A", "BUTTON", "INPUT", "TEXTAREA"].includes(target.tagName)) return;
+      if (["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName)) return;
+
+      const typedKey = event.key.toUpperCase();
+      if (TYPEWRITER_KEYS.includes(typedKey)) {
+        pressTypewriterKey(typedKey);
+        return;
+      }
+
+      if (event.key !== "Enter" || ["A", "BUTTON"].includes(target.tagName)) return;
       event.preventDefault();
       printPortfolio();
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [printPortfolio]);
+  }, [pressTypewriterKey, printPortfolio, resumeOpen]);
+
+  useEffect(() => {
+    if (!resumeOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setResumeOpen(false);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [resumeOpen]);
 
   useEffect(
     () => () => {
       window.clearTimeout(finishTimer.current);
       window.clearTimeout(restartTimer.current);
       window.clearTimeout(resetTimer.current);
+      window.clearTimeout(keyTimer.current);
       if (audioContextRef.current) void audioContextRef.current.close();
     },
     [],
@@ -332,7 +381,7 @@ export function TypewriterPortfolio() {
           <div className="typewriter-housing">
             <div className="typewriter-housing__topline">
               <span>PERSONAL ARCHIVE</span>
-              <TypewriterChromeLogo />
+              <ChromeSiddhantLogo />
               <span>MODEL SG–26</span>
             </div>
 
@@ -351,13 +400,49 @@ export function TypewriterPortfolio() {
             </div>
 
             <div className="typewriter-keyboard">
-              <div className="typewriter-keys" aria-hidden="true">
+              <div className="typewriter-keys" aria-label="Working typewriter keys">
                 {"QWERTYUIOP".split("").map((key) => (
-                  <span key={key}>{key}</span>
+                  <button
+                    type="button"
+                    key={key}
+                    className={pressedKey === key ? "is-pressed" : ""}
+                    onPointerDown={() => pressTypewriterKey(key)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") pressTypewriterKey(key);
+                    }}
+                    aria-label={`Type ${key}`}
+                  >
+                    {key}
+                  </button>
                 ))}
                 {"ASDFGHJKL".split("").map((key) => (
-                  <span key={key}>{key}</span>
+                  <button
+                    type="button"
+                    key={key}
+                    className={pressedKey === key ? "is-pressed" : ""}
+                    onPointerDown={() => pressTypewriterKey(key)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") pressTypewriterKey(key);
+                    }}
+                    aria-label={`Type ${key}`}
+                  >
+                    {key}
+                  </button>
                 ))}
+              </div>
+
+              <div className="typewriter-object-keys" aria-label="Switch desk object">
+                <em>SWITCH OBJECT</em>
+                <button type="button" onClick={() => changeObject("cassette")}>
+                  <Music2 aria-hidden="true" />
+                  <span>RECORD</span>
+                  <small>PLAY</small>
+                </button>
+                <button type="button" onClick={() => changeObject("blackjack")}>
+                  <Layers3 aria-hidden="true" />
+                  <span>CARDS</span>
+                  <small>DEAL</small>
+                </button>
               </div>
 
               <button
@@ -370,12 +455,14 @@ export function TypewriterPortfolio() {
                 <span className="typewriter-return__arrow">↵</span>
                 <span>
                   {printState === "printed"
-                    ? "AGAIN"
+                    ? "NEW CV"
                     : printState === "tearing"
                       ? "TEAR"
                       : printState === "resetting"
                         ? "LOAD"
-                        : "RETURN"}
+                        : printState === "printing"
+                          ? "PRINTING"
+                          : "PRINT CV"}
                 </span>
               </button>
             </div>
@@ -418,14 +505,13 @@ export function TypewriterPortfolio() {
                     pipelines, fast APIs, automation infrastructure and useful AI tools. I’m currently a Software
                     Development Engineer at Info Edge and an Information Technology graduate.
                   </p>
-                  <a
+                  <button
+                    type="button"
                     className="resume-download"
-                    href="https://drive.google.com/file/d/1z3TnNM1jYsA3MAeL19_F5KRYYIDjUb2o/view?usp=sharing"
-                    target="_blank"
-                    rel="noreferrer"
+                    onClick={() => setResumeOpen(true)}
                   >
                     <Download aria-hidden="true" /> RESUME.PDF
-                  </a>
+                  </button>
                 </section>
 
                 <div className="resume-rule"><span>WORK RECORD</span></div>
@@ -522,6 +608,32 @@ export function TypewriterPortfolio() {
           </div>
         </div>
       </section>
+
+      {resumeOpen ? (
+        <div className="resume-preview" role="presentation" onMouseDown={() => setResumeOpen(false)}>
+          <section
+            className="resume-preview__window"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resume-preview-title"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <header>
+              <div>
+                <strong id="resume-preview-title">SIDDHANT GUPTA · CV</strong>
+                <span>LOCAL ARCHIVE COPY</span>
+              </div>
+              <a href="/Siddhant_CV.pdf" download="Siddhant_Gupta_CV.pdf">
+                <Download aria-hidden="true" /> DOWNLOAD
+              </a>
+              <button type="button" onClick={() => setResumeOpen(false)} aria-label="Close résumé">
+                <X aria-hidden="true" />
+              </button>
+            </header>
+            <iframe title="Siddhant Gupta CV" src="/Siddhant_CV.pdf#view=FitH&toolbar=0" />
+          </section>
+        </div>
+      ) : null}
     </main>
   );
 }

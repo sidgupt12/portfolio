@@ -123,34 +123,6 @@
   text-align: right;
 }
 
-.typewriter-chrome-logo {
-  display: block;
-  width: 116px;
-  height: 34px;
-  margin: -11px 0 -10px;
-  overflow: visible;
-  filter:
-    drop-shadow(0 1px 0 rgb(255 255 255 / 0.5))
-    drop-shadow(0 3px 2px rgb(0 0 0 / 0.82));
-}
-
-.typewriter-chrome-logo text {
-  stroke: rgb(255 255 255 / 0.6);
-  stroke-width: 0.35;
-  font-family: "Snell Roundhand", "Segoe Script", "Brush Script MT", cursive;
-  font-size: 38px;
-  font-style: italic;
-  letter-spacing: -0.07em;
-  paint-order: stroke fill;
-}
-
-.typewriter-chrome-logo path {
-  fill: none;
-  stroke: url(#machine-chrome);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-}
-
 .typewriter-slot {
   position: relative;
   height: 18px;
@@ -172,12 +144,62 @@
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: 1fr 76px;
+  grid-template-columns: 1fr auto 76px;
   align-items: end;
   gap: clamp(12px, 3vw, 30px);
   padding: 13px 15px 2px;
   border-top: 1px solid rgb(222 204 178 / 0.12);
 }
+
+.typewriter-object-keys {
+  position: relative;
+  display: flex;
+  gap: 7px;
+  padding-top: 14px;
+}
+
+.typewriter-object-keys em {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: #d8c8af;
+  font-size: 6px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+
+.typewriter-object-keys button {
+  position: relative;
+  display: grid;
+  width: 55px;
+  height: 47px;
+  place-items: center;
+  padding: 4px 2px;
+  color: #d4c6af;
+  border: 1px solid #665a49;
+  border-radius: 5px;
+  background:
+    linear-gradient(145deg, rgb(255 255 255 / 0.09), transparent 38%),
+    #2d2923;
+  box-shadow: inset 1px 1px rgb(255 255 255 / 0.12), inset -1px -1px #0d0b09, 0 5px 0 #0c0b09, 0 8px 9px #000;
+  font: 700 7px "Courier New", monospace;
+  cursor: pointer;
+  transition: filter 140ms ease, transform 90ms ease, box-shadow 90ms ease;
+}
+
+.typewriter-object-keys button::after { content: ""; position: absolute; bottom: 3px; left: 50%; width: 19px; border-top: 2px solid #a18450; box-shadow: 0 0 5px rgb(161 132 80 / 0.35); transform: translateX(-50%); }
+.typewriter-object-keys button:last-of-type::after { border-color: #8e4035; box-shadow: 0 0 5px rgb(142 64 53 / 0.4); }
+.typewriter-object-keys button:hover { border-color: #b49e78; filter: brightness(1.18); }
+
+.typewriter-object-keys button:active {
+  transform: translateY(5px);
+  box-shadow: inset 0 2px 3px rgb(30 23 18 / 0.32), 0 1px 0 #46382c;
+}
+
+.typewriter-object-keys svg { width: 13px; height: 13px; color: #9f8967; }
+.typewriter-object-keys small { color: #81735f; font-size: 5px; letter-spacing: 0.1em; }
 
 .typewriter-keys {
   display: flex;
@@ -188,19 +210,28 @@
   margin: 0 auto;
 }
 
-.typewriter-keys span {
+.typewriter-keys button {
   display: grid;
   width: 27px;
   height: 27px;
   place-items: center;
+  padding: 0;
   color: #c5b69f;
   border: 2px solid #0c0b09;
   border-radius: 50%;
   background: radial-gradient(circle at 45% 36%, #454038 0 28%, #161411 68%);
   box-shadow: inset 0 1px rgb(255 255 255 / 0.16), 0 4px 0 #0b0a08, 0 5px 5px #000;
+  font-family: inherit;
   font-size: 10px;
   font-weight: 700;
+  cursor: pointer;
+  transition: transform 65ms ease, box-shadow 65ms ease, filter 90ms ease;
 }
+
+.typewriter-keys button:hover { filter: brightness(1.22); }
+.typewriter-keys button:active,
+.typewriter-keys button.is-pressed { transform: translateY(4px); box-shadow: inset 0 2px 3px #050403, 0 1px 0 #0b0a08; }
+.typewriter-keys button:focus-visible { outline: 1px solid #c5b69f; outline-offset: 3px; }
 
 .typewriter-return {
   position: relative;
@@ -458,10 +489,13 @@
   padding: 8px 9px;
   color: var(--ink);
   border: 1px solid var(--ink);
+  background: transparent;
   text-decoration: none;
+  font-family: inherit;
   font-size: 9px;
   font-weight: 700;
   box-shadow: 2px 2px 0 var(--ink);
+  cursor: pointer;
 }
 
 .resume-download:hover { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
@@ -666,6 +700,55 @@
 .resume-footer a { color: var(--ink); font-family: Georgia, serif; font-size: 13px; font-weight: 700; }
 .resume-footer > span:last-child { font-family: Georgia, serif; font-size: 17px; font-weight: 900; text-align: center; }
 
+.resume-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgb(8 7 6 / 0.88);
+  backdrop-filter: blur(8px);
+  animation: resume-preview-arrive 180ms ease both;
+}
+
+.resume-preview__window {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  width: min(980px, 96vw);
+  height: min(900px, 94dvh);
+  overflow: hidden;
+  border: 1px solid #82715d;
+  border-radius: 8px;
+  background: #191511;
+  box-shadow: 0 35px 80px #000;
+}
+
+.resume-preview__window header {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 13px;
+  color: #d9cbb6;
+  border-bottom: 1px solid #514438;
+  background: #241e18;
+}
+
+.resume-preview__window header div { display: grid; gap: 2px; }
+.resume-preview__window header strong { font: 700 10px "Courier New", monospace; letter-spacing: 0.08em; }
+.resume-preview__window header span { color: #8f7d65; font: 700 6px "Courier New", monospace; letter-spacing: 0.14em; }
+.resume-preview__window header a,
+.resume-preview__window header button { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 7px 9px; color: #211a15; border: 1px solid #e0d1b9; border-radius: 4px; background: linear-gradient(#e5dac8, #aa967a); box-shadow: 0 3px 0 #584738; font: 700 7px "Courier New", monospace; text-decoration: none; cursor: pointer; }
+.resume-preview__window header button { min-width: 32px; justify-content: center; padding-inline: 7px; color: #eaded0; border-color: #733127; background: #67271f; box-shadow: 0 3px 0 #351510; }
+.resume-preview__window header svg { width: 13px; height: 13px; }
+.resume-preview__window iframe { width: 100%; height: 100%; border: 0; background: #d9d4ca; }
+
+@keyframes resume-preview-arrive {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @keyframes typewriter-rattle {
   0% { transform: translateX(-1px) rotate(-0.08deg); }
   100% { transform: translateX(1px) rotate(0.08deg); }
@@ -692,10 +775,16 @@
   .typewriter-housing { padding-inline: 13px; }
   .typewriter-housing__topline { grid-template-columns: 1fr auto; font-size: 7px; }
   .typewriter-housing__topline > :last-child { display: none; }
-  .typewriter-keyboard { grid-template-columns: 1fr 64px; padding-inline: 3px; }
+  .typewriter-keyboard { grid-template-columns: 1fr auto 64px; gap: 6px; padding-inline: 3px; }
   .typewriter-keys { gap: 6px; max-width: 270px; }
-  .typewriter-keys span { width: 22px; height: 22px; font-size: 8px; }
+  .typewriter-keys button { width: 22px; height: 22px; font-size: 8px; }
   .typewriter-return { width: 61px; height: 48px; }
+  .typewriter-object-keys { display: grid; gap: 4px; }
+  .typewriter-object-keys em { display: none; }
+  .typewriter-object-keys { padding-top: 0; }
+  .typewriter-object-keys button { width: 45px; height: 25px; grid-template-columns: auto auto; gap: 2px; }
+  .typewriter-object-keys button small { display: none; }
+  .typewriter-object-keys svg { width: 10px; height: 10px; }
   .paper-feed { width: 94vw; }
   .paper-feed__clip { padding-inline: 5px; }
   .resume-paper__inner { padding-inline: 31px; }
@@ -713,6 +802,10 @@
   .resume-project__title { display: grid; }
   .resume-footer { grid-template-columns: 1fr; justify-items: center; }
   .resume-footer > span:last-child { display: none; }
+  .resume-preview { padding: 8px; }
+  .resume-preview__window { width: 100%; height: 96dvh; }
+  .resume-preview__window header { grid-template-columns: 1fr auto; }
+  .resume-preview__window header a { grid-column: 1 / -1; grid-row: 2; justify-content: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {

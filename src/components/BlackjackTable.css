@@ -1,0 +1,325 @@
+.blackjack-room {
+  display: grid;
+  width: 100%;
+  height: 100dvh;
+  min-height: 0;
+  place-items: center;
+  padding: 10px 1.25rem;
+  font-family: "Courier New", ui-monospace, monospace;
+  overflow: hidden;
+}
+
+.blackjack-table {
+  width: min(800px, 94vw);
+  color: #e2d6c1;
+  filter: drop-shadow(0 30px 34px rgb(0 0 0 / 0.5));
+}
+
+.blackjack-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+  padding: 0 20px 9px;
+}
+.blackjack-header > div:first-child { display: grid; gap: 4px; }
+.blackjack-header__eyebrow { color: #9f8d75; font-size: 8px; letter-spacing: 0.17em; }
+.blackjack-header .siddhant-wordmark { margin: -5px 0 -2px; }
+.blackjack-header .siddhant-wordmark__script { font-size: 35px; }
+.blackjack-header small { color: #7f705f; font-size: 6px; letter-spacing: 0.09em; }
+.blackjack-header dl { display: flex; gap: 9px; margin: 0; }
+.blackjack-header dl div { display: grid; width: 32px; place-items: center; padding: 5px 0; border: 1px solid #5a493a; border-radius: 4px; background: #1c1713; }
+.blackjack-header dt { color: #8e7c67; font-size: 6px; }
+.blackjack-header dd { margin: 1px 0 0; font: 700 13px Georgia, serif; }
+
+.blackjack-casino-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  margin-left: auto;
+  padding: 7px;
+  border: 1px solid #806d50;
+  border-radius: 7px;
+  background: #15120f;
+  box-shadow: inset 0 0 8px #000, 0 1px rgb(255 255 255 / 0.08);
+}
+
+.blackjack-casino-nav > b {
+  display: grid;
+  width: 42px;
+  place-items: center;
+  color: #c9a968;
+  font-size: 6px;
+  line-height: 1.35;
+  letter-spacing: 0.12em;
+  text-align: center;
+}
+
+.blackjack-casino-nav button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: center;
+  column-gap: 6px;
+  min-width: 105px;
+  padding: 7px 9px;
+  color: #2b241a;
+  border: 1px solid #f0dfbe;
+  border-radius: 4px;
+  background: linear-gradient(#eadcc3, #ae9873);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.7), 0 4px 0 #58472f;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: filter 130ms ease, transform 90ms ease, box-shadow 90ms ease;
+}
+
+.blackjack-casino-nav button:last-child { color: #f3e4da; border-color: #c87969; background: linear-gradient(#b4483c, #6f281f); box-shadow: inset 0 1px rgb(255 255 255 / 0.22), 0 4px 0 #401a15; }
+.blackjack-casino-nav button:hover { filter: brightness(1.12); }
+.blackjack-casino-nav button:active { transform: translateY(3px); box-shadow: 0 1px 0 #58472f; }
+.blackjack-casino-nav svg { grid-row: 1 / 3; width: 14px; height: 14px; }
+.blackjack-casino-nav span { color: inherit; font: 900 7px "Courier New", monospace; letter-spacing: 0.06em; }
+.blackjack-casino-nav small { color: inherit; font: 700 5px "Courier New", monospace; letter-spacing: 0.08em; opacity: 0.72; }
+
+.blackjack-felt {
+  position: relative;
+  min-height: 520px;
+  padding: 22px 58px 20px;
+  border: 14px solid #4b3728;
+  border-radius: 42% 42% 15% 15% / 15% 15% 10% 10%;
+  background:
+    radial-gradient(circle at 50% 45%, rgb(255 255 255 / 0.04), transparent 38%),
+    #273c30;
+  box-shadow:
+    inset 0 0 0 4px #17110d,
+    inset 0 0 45px rgb(0 0 0 / 0.48),
+    0 4px 0 #1d1510;
+  overflow: hidden;
+}
+
+.blackjack-felt::after {
+  content: "";
+  position: absolute;
+  top: 29%;
+  left: 50%;
+  width: 48%;
+  height: 29%;
+  border: 1px solid rgb(218 199 167 / 0.12);
+  border-bottom: 0;
+  border-radius: 50% 50% 0 0;
+  transform: translateX(-50%);
+}
+
+.blackjack-deck {
+  position: absolute;
+  top: 53px;
+  right: 47px;
+  z-index: 3;
+  width: 58px;
+  height: 82px;
+}
+.blackjack-deck span { position: absolute; inset: 0; border: 1px solid #c7b99e; border-radius: 6px; background: repeating-linear-gradient(45deg, rgb(255 255 255 / 0.12) 0 1px, transparent 1px 5px), #762c28; box-shadow: 0 3px 0 #d7cab2, 0 5px 5px rgb(0 0 0 / 0.35); }
+.blackjack-deck span:nth-child(2) { transform: translate(3px, -3px); }
+.blackjack-deck span:nth-child(3) { display: grid; place-content: center; gap: 1px; color: #eadcc2; border: 3px double #eadcc2; transform: translate(6px, -6px); text-align: center; }
+.blackjack-deck b { font: 900 8px Georgia, serif; letter-spacing: 0.04em; }
+.blackjack-deck small { font: 700 5px Georgia, serif; }
+
+.blackjack-hand { position: relative; z-index: 4; display: flex; align-items: center; justify-content: center; min-height: 148px; gap: 20px; }
+.blackjack-hand--dealer { align-items: start; }
+.blackjack-hand--player { align-items: end; }
+.blackjack-hand__label { display: grid; width: 56px; place-items: center; gap: 3px; color: #aa9a7e; }
+.blackjack-hand__label span { font-size: 7px; letter-spacing: 0.12em; }
+.blackjack-hand__label strong { font: 900 25px Georgia, serif; }
+.blackjack-cards { display: flex; justify-content: center; min-width: 210px; min-height: 126px; }
+.blackjack-cards .playing-card { transform-origin: 100% 0; animation: blackjack-deal-card 520ms cubic-bezier(0.16, 0.84, 0.25, 1.08) both; }
+.blackjack-cards .playing-card + .playing-card { margin-left: -31px; }
+
+.blackjack-message { position: relative; z-index: 4; display: flex; align-items: center; justify-content: center; gap: 13px; min-height: 40px; color: #dfd0b7; font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-align: center; }
+.blackjack-message i { width: 38px; border-top: 1px solid rgb(223 208 183 / 0.28); }
+
+.blackjack-betting {
+  position: absolute;
+  right: 28px;
+  bottom: 14px;
+  left: 28px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  pointer-events: none;
+}
+
+.blackjack-bank {
+  display: grid;
+  gap: 2px;
+  min-width: 106px;
+  padding: 8px 11px;
+  color: #cfb985;
+  border: 1px solid rgb(215 190 137 / 0.4);
+  border-radius: 5px;
+  background: rgb(17 27 21 / 0.82);
+  box-shadow: inset 0 0 10px rgb(0 0 0 / 0.34);
+}
+
+.blackjack-bank span { font-size: 6px; letter-spacing: 0.16em; }
+.blackjack-bank strong { font: 900 19px Georgia, serif; }
+.blackjack-bank small { color: #8f8065; font-size: 5px; letter-spacing: 0.08em; }
+
+.blackjack-bet-circle {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto 46px auto;
+  align-items: center;
+  justify-items: center;
+  min-width: 148px;
+  color: #d9c69c;
+  pointer-events: auto;
+}
+
+.blackjack-bet-circle > span { grid-column: 1 / -1; font-size: 5px; font-weight: 700; letter-spacing: 0.13em; }
+.blackjack-bet-circle > strong { align-self: end; margin-left: -15px; padding: 3px 5px; border-radius: 3px; background: #18231c; font: 900 13px Georgia, serif; }
+.blackjack-bet-circle > div:last-child { grid-column: 1 / -1; display: flex; gap: 4px; }
+.blackjack-bet-circle > div:last-child button { padding: 3px 6px; color: #ad9c7b; border: 1px solid #665b48; border-radius: 3px; background: #172019; font: 700 5px "Courier New", monospace; letter-spacing: 0.07em; cursor: pointer; }
+.blackjack-bet-circle > div:last-child button:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.blackjack-bet-stack {
+  position: relative;
+  width: 70px;
+  height: 46px;
+}
+
+.blackjack-bet-stack > small { position: absolute; inset: 13px 0 auto; color: #766c59; font-size: 5px; letter-spacing: 0.12em; text-align: center; }
+
+.blackjack-chip-piece {
+  --piece-color: #315b91;
+  position: absolute;
+  bottom: calc(var(--stack-index) * 2px);
+  left: calc(9px + var(--stack-index) * 2px);
+  z-index: var(--stack-index);
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  color: #f5ead4;
+  border: 4px dashed #eadcc1;
+  border-radius: 50%;
+  background: var(--piece-color);
+  box-shadow: inset 0 0 0 2px #18201e, inset 0 0 0 4px #eadcc1, 0 2px 0 #111, 0 4px 5px rgb(0 0 0 / 0.4);
+  font-style: normal;
+  transform: rotate(calc(-7deg + var(--stack-index) * 3deg));
+}
+
+.blackjack-chip-piece b { display: grid; width: 20px; height: 20px; place-items: center; border: 1px solid currentColor; border-radius: 50%; font: 900 7px Georgia, serif; }
+.blackjack-chip-piece--25 { --piece-color: #3c7654; }
+.blackjack-chip-piece--50 { --piece-color: #a04438; }
+.blackjack-chip-piece--100 { --piece-color: #d6c29a; color: #27221c; }
+
+.blackjack-chip-bank {
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+  pointer-events: auto;
+}
+
+.blackjack-chip-bank > span { color: #9d8a69; font-size: 5px; font-weight: 700; letter-spacing: 0.13em; }
+
+.blackjack-chip-rack {
+  display: flex;
+  align-items: end;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.blackjack-chip {
+  position: relative;
+  display: grid;
+  width: 47px;
+  height: 47px;
+  place-items: center;
+  padding: 0;
+  color: #f5ead4;
+  border: 5px dashed #eadcc1;
+  border-radius: 50%;
+  background: #20201f;
+  box-shadow: inset 0 0 0 3px #111, inset 0 0 0 5px #eadcc1, 0 5px 0 #0b0b0a, 0 7px 9px rgb(0 0 0 / 0.45);
+  font: 900 10px Georgia, serif;
+  cursor: pointer;
+  transition: transform 150ms ease, filter 150ms ease;
+}
+
+.blackjack-chip--10 { background: #315b91; }
+.blackjack-chip--25 { background: #3c7654; }
+.blackjack-chip--50 { background: #a04438; }
+.blackjack-chip--100 { color: #23201c; background: #d6c29a; box-shadow: inset 0 0 0 3px #877454, inset 0 0 0 5px #f3ead8, 0 5px 0 #665438, 0 7px 9px rgb(0 0 0 / 0.45); }
+.blackjack-chip:hover:not(:disabled) { filter: brightness(1.14); transform: translateY(-4px) rotate(-4deg); }
+.blackjack-chip.has-selected { filter: brightness(1.08); }
+.blackjack-chip:disabled { opacity: 0.38; cursor: not-allowed; }
+.blackjack-chip span { display: grid; width: 25px; height: 25px; place-items: center; color: inherit; border: 1px solid currentColor; border-radius: 50%; font-size: 9px; letter-spacing: 0; }
+.blackjack-chip > i { position: absolute; top: -7px; right: -5px; display: grid; min-width: 17px; height: 17px; place-items: center; padding: 0 3px; color: #201a14; border: 1px solid #f1e5cd; border-radius: 99px; background: #e3d1af; box-shadow: 0 2px 4px rgb(0 0 0 / 0.4); font: normal 900 7px "Courier New", monospace; }
+
+.blackjack-actions { position: relative; z-index: 7; display: flex; justify-content: center; gap: 10px; margin-top: 4px; }
+.blackjack-actions button {
+  min-width: 92px;
+  padding: 11px 15px;
+  color: #271f18;
+  border: 1px solid #cfbea1;
+  border-radius: 5px;
+  background: linear-gradient(#e7dbc5, #a99577);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.55), 0 5px 0 #483829, 0 8px 10px rgb(0 0 0 / 0.32);
+  font: 700 9px "Courier New", monospace;
+  letter-spacing: 0.09em;
+  cursor: pointer;
+}
+.blackjack-actions button:active { transform: translateY(4px); box-shadow: inset 0 1px rgb(255 255 255 / 0.4), 0 1px 0 #483829; }
+.blackjack-actions button:disabled { opacity: 0.42; cursor: wait; }
+.blackjack-actions__deal { color: #efe4d2 !important; background: linear-gradient(#91392e, #5c251e) !important; }
+
+@keyframes blackjack-deal-card {
+  0% { opacity: 0; transform: perspective(600px) translate(250px, -145px) rotate(22deg) rotateY(-28deg) scale(0.82); }
+  72% { opacity: 1; transform: perspective(600px) translate(-7px, 5px) rotate(-2deg) rotateY(2deg) scale(1.025); }
+  100% { opacity: 1; transform: none; }
+}
+
+@media (max-width: 980px) {
+  .blackjack-room { padding-inline: 1rem; }
+  .blackjack-felt { padding-inline: 34px; }
+}
+
+@media (max-width: 720px) {
+  .blackjack-room { padding: 6px 0.35rem; }
+  .blackjack-table { width: 98vw; }
+  .blackjack-header { display: grid; grid-template-columns: 1fr auto; gap: 7px; padding: 0 10px 7px; }
+  .blackjack-header dl { grid-column: 2; grid-row: 1; }
+  .blackjack-header .siddhant-wordmark__script { font-size: 31px; }
+  .blackjack-header small { display: none; }
+  .blackjack-casino-nav { grid-column: 1 / -1; grid-row: 2; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; margin: 0; }
+  .blackjack-casino-nav > b { grid-column: 1 / -1; width: auto; }
+  .blackjack-casino-nav button { min-width: 82px; padding-inline: 5px; }
+  .blackjack-felt { min-height: 480px; padding: 12px 7px 76px; border-width: 9px; border-radius: 24px; }
+  .blackjack-deck { top: 28px; right: 20px; transform: scale(0.7); }
+  .blackjack-hand { min-height: 122px; gap: 5px; }
+  .blackjack-hand__label { width: 38px; }
+  .blackjack-cards { min-width: 170px; min-height: 110px; transform: scale(0.78); }
+  .blackjack-message { font-size: 8px; }
+  .blackjack-betting { right: 8px; bottom: 13px; left: 8px; gap: 6px; align-items: center; }
+  .blackjack-bank { min-width: 72px; padding-inline: 6px; }
+  .blackjack-bank small { display: none; }
+  .blackjack-bet-circle { min-width: 94px; transform: scale(0.83); }
+  .blackjack-chip-bank { gap: 3px; }
+  .blackjack-chip-rack { gap: 3px; }
+  .blackjack-chip { width: 39px; height: 39px; border-width: 3px; }
+  .blackjack-chip span { width: 20px; height: 20px; font-size: 7px; }
+}
+
+@media (max-height: 680px) and (min-width: 721px) {
+  .blackjack-table { transform: scale(0.86); }
+}
+
+@media (max-height: 620px) and (max-width: 720px) {
+  .blackjack-table { transform: scale(0.84); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blackjack-cards .playing-card { animation: none; }
+}
