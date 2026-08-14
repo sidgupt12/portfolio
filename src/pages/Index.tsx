@@ -1,13 +1,11 @@
-import { ModernPortfolio } from "@/components/ModernPortfolio";
 import { SignatureCurtain } from "@/components/SignatureCurtain";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { TypewriterPortfolio } from "@/components/TypewriterPortfolio";
 
 const Index = () => {
   return (
     <div className="relative">
       <SignatureCurtain />
-      <ThemeToggle />
-      <ModernPortfolio />
+      <TypewriterPortfolio />
     </div>
   );
 };

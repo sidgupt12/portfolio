@@ -1,0 +1,733 @@
+:root {
+  --machine-black: #11100e;
+  --machine-brown: #2a211b;
+  --machine-tan: #8e7b67;
+  --machine-cream: #d5c7af;
+  --paper: #e9dfcb;
+  --paper-deep: #d9cbb2;
+  --ink: #201d19;
+  --ink-faded: #625a4e;
+  --stamp: #7d2d23;
+}
+
+.typewriter-world {
+  min-height: 100vh;
+  color: var(--machine-cream);
+  background:
+    radial-gradient(circle at 50% 20%, rgb(100 71 48 / 0.24), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgb(68 45 31 / 0.22), transparent 38%),
+    var(--machine-black);
+  font-family: "Courier New", "Nimbus Mono PS", ui-monospace, monospace;
+  overflow-x: hidden;
+  color-scheme: dark;
+}
+
+.typewriter-ambient {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 0.018) 1px, transparent 1px),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+  background-size: 100% 5px, 180px 180px;
+  mix-blend-mode: soft-light;
+  z-index: 20;
+}
+
+.typewriter-stage {
+  width: min(100%, 1100px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: clamp(9rem, 24vh, 16rem) 1rem 7rem;
+}
+
+.typewriter-machine {
+  position: relative;
+  z-index: 3;
+  width: min(900px, 96vw);
+  margin: 0 auto;
+  transform-origin: center bottom;
+}
+
+.typewriter-world--printing .typewriter-machine {
+  animation: typewriter-rattle 120ms steps(2, end) 12;
+}
+
+.typewriter-carriage {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  width: 96%;
+  height: 26px;
+  margin: 0 auto -7px;
+}
+
+.typewriter-carriage__rail {
+  flex: 1;
+  height: 15px;
+  border: 1px solid #766c60;
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, #766d62 0%, #2b2824 24%, #0e0d0c 60%, #49443d 100%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.2), 0 4px 6px rgb(0 0 0 / 0.6);
+}
+
+.typewriter-carriage__knob {
+  width: 42px;
+  height: 24px;
+  border: 1px solid #1b1916;
+  border-radius: 6px;
+  background: repeating-linear-gradient(90deg, #171512 0 3px, #2b2823 3px 6px);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.08), 0 4px 7px rgb(0 0 0 / 0.65);
+}
+
+.typewriter-housing {
+  position: relative;
+  z-index: 2;
+  padding: 21px clamp(18px, 4vw, 50px) 27px;
+  border: 1px solid #0a0908;
+  border-radius: 18px 18px 32px 32px;
+  background:
+    linear-gradient(112deg, rgb(255 255 255 / 0.08), transparent 24%),
+    linear-gradient(180deg, #4b4136 0%, #2c251f 45%, #171411 100%);
+  box-shadow:
+    inset 0 1px rgb(255 255 255 / 0.15),
+    inset 0 -8px 18px rgb(0 0 0 / 0.55),
+    0 28px 48px -18px rgb(0 0 0 / 0.85);
+}
+
+.typewriter-housing::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  pointer-events: none;
+  border: 1px solid rgb(214 198 173 / 0.08);
+  border-radius: 13px 13px 25px 25px;
+}
+
+.typewriter-housing__topline {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+  color: #a69680;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-shadow: 0 1px #000;
+}
+
+.typewriter-housing__topline > :last-child {
+  text-align: right;
+}
+
+.typewriter-chrome-logo {
+  display: block;
+  width: 116px;
+  height: 34px;
+  margin: -11px 0 -10px;
+  overflow: visible;
+  filter:
+    drop-shadow(0 1px 0 rgb(255 255 255 / 0.5))
+    drop-shadow(0 3px 2px rgb(0 0 0 / 0.82));
+}
+
+.typewriter-chrome-logo text {
+  stroke: rgb(255 255 255 / 0.6);
+  stroke-width: 0.35;
+  font-family: "Snell Roundhand", "Segoe Script", "Brush Script MT", cursive;
+  font-size: 38px;
+  font-style: italic;
+  letter-spacing: -0.07em;
+  paint-order: stroke fill;
+}
+
+.typewriter-chrome-logo path {
+  fill: none;
+  stroke: url(#machine-chrome);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.typewriter-slot {
+  position: relative;
+  height: 18px;
+  margin: 17px auto 19px;
+  border: 1px solid #080706;
+  border-radius: 999px;
+  background: #050504;
+  box-shadow: inset 0 4px 8px #000, 0 1px rgb(255 255 255 / 0.08);
+}
+
+.typewriter-slot span {
+  position: absolute;
+  inset: 6px 4%;
+  border-radius: inherit;
+  background: #15120f;
+}
+
+.typewriter-keyboard {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr 76px;
+  align-items: end;
+  gap: clamp(12px, 3vw, 30px);
+  padding: 13px 15px 2px;
+  border-top: 1px solid rgb(222 204 178 / 0.12);
+}
+
+.typewriter-keys {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 7px 9px;
+  max-width: 510px;
+  margin: 0 auto;
+}
+
+.typewriter-keys span {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  place-items: center;
+  color: #c5b69f;
+  border: 2px solid #0c0b09;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 36%, #454038 0 28%, #161411 68%);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.16), 0 4px 0 #0b0a08, 0 5px 5px #000;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.typewriter-return {
+  position: relative;
+  display: grid;
+  width: 72px;
+  height: 52px;
+  place-items: center;
+  gap: 0;
+  padding: 4px 0 5px;
+  color: #201a15;
+  border: 1px solid #cfc0a9;
+  border-radius: 6px;
+  background: linear-gradient(145deg, #e4d8c4 0%, #a8957c 82%);
+  box-shadow:
+    inset 1px 1px rgb(255 255 255 / 0.72),
+    inset -2px -2px rgb(72 57 44 / 0.32),
+    0 6px 0 #44372b,
+    0 9px 12px #090806;
+  font: inherit;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, filter 180ms ease;
+}
+
+.typewriter-return:hover {
+  filter: brightness(1.08);
+}
+
+.typewriter-return:active,
+.typewriter-world--printing .typewriter-return {
+  transform: translateY(5px);
+  box-shadow:
+    inset 1px 1px rgb(255 255 255 / 0.55),
+    inset -2px -2px rgb(72 57 44 / 0.35),
+    0 1px 0 #44372b,
+    0 3px 5px #090806;
+}
+
+.typewriter-return:focus-visible {
+  outline: 2px solid #eadfcf;
+  outline-offset: 5px;
+}
+
+.typewriter-return:disabled {
+  cursor: wait;
+}
+
+.typewriter-return__arrow {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  line-height: 0.8;
+}
+
+.typewriter-feet {
+  display: flex;
+  justify-content: space-between;
+  width: 86%;
+  margin: -3px auto 0;
+}
+
+.typewriter-feet span {
+  width: 54px;
+  height: 12px;
+  border-radius: 0 0 8px 8px;
+  background: #080706;
+  box-shadow: 0 7px 10px #000;
+}
+
+.paper-feed {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-rows: 0fr;
+  width: min(760px, 88vw);
+  margin: -39px auto 0;
+  transition: grid-template-rows 4.1s cubic-bezier(0.22, 0.76, 0.22, 1);
+}
+
+.typewriter-world--printing .paper-feed,
+.typewriter-world--printed .paper-feed,
+.typewriter-world--tearing .paper-feed {
+  grid-template-rows: 1fr;
+}
+
+.typewriter-world--resetting .paper-feed {
+  grid-template-rows: 0fr;
+  transition: none;
+}
+
+.paper-feed__clip {
+  min-height: 0;
+  overflow: hidden;
+  padding: 39px 13px 0;
+}
+
+.resume-paper {
+  position: relative;
+  color: var(--ink);
+  background:
+    linear-gradient(90deg, rgb(111 82 52 / 0.06), transparent 7%, transparent 93%, rgb(111 82 52 / 0.07)),
+    repeating-linear-gradient(0deg, transparent 0 23px, rgb(76 61 44 / 0.025) 23px 24px),
+    var(--paper);
+  box-shadow: 0 28px 42px rgb(0 0 0 / 0.42), 0 5px 8px rgb(0 0 0 / 0.32);
+  font-family: "Courier New", "Nimbus Mono PS", ui-monospace, monospace;
+  transform-origin: top center;
+  will-change: transform, opacity, clip-path;
+}
+
+.typewriter-world--tearing .resume-paper {
+  animation: typewriter-tear-away 900ms cubic-bezier(0.52, 0.08, 0.66, 0.98) forwards;
+  clip-path: polygon(
+    0 7px, 3% 1px, 6% 9px, 9% 2px, 12% 8px, 15% 0,
+    18% 7px, 21% 2px, 24% 9px, 27% 1px, 30% 7px, 33% 2px,
+    36% 8px, 39% 0, 42% 7px, 45% 2px, 48% 9px, 51% 1px,
+    54% 8px, 57% 2px, 60% 7px, 63% 0, 66% 8px, 69% 2px,
+    72% 9px, 75% 1px, 78% 7px, 81% 2px, 84% 8px, 87% 0,
+    90% 7px, 93% 2px, 96% 9px, 100% 2px, 100% 100%, 0 100%
+  );
+}
+
+.resume-paper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)' opacity='.24'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+.resume-paper::after {
+  content: "";
+  display: block;
+  height: 15px;
+  background: linear-gradient(135deg, var(--paper) 8px, transparent 0) 0 0 / 16px 16px repeat-x,
+    linear-gradient(225deg, var(--paper) 8px, transparent 0) 0 0 / 16px 16px repeat-x;
+  transform: translateY(13px);
+}
+
+.resume-paper__inner {
+  position: relative;
+  z-index: 2;
+  padding: clamp(38px, 7vw, 70px) clamp(34px, 8vw, 78px) 50px;
+}
+
+.paper-perforation {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  width: 13px;
+  opacity: 0.55;
+  background: radial-gradient(circle, var(--machine-black) 0 3px, transparent 3.5px) 50% 0 / 12px 24px repeat-y;
+}
+
+.paper-perforation--left { left: 9px; }
+.paper-perforation--right { right: 9px; }
+
+.resume-register {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 13px;
+  color: var(--ink-faded);
+  border-bottom: 1px solid rgb(41 36 29 / 0.55);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.resume-header {
+  padding: 35px 0 30px;
+}
+
+.resume-kicker {
+  margin: 0 0 15px;
+  color: var(--stamp);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
+
+.resume-header h1 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(55px, 11vw, 102px);
+  font-weight: 900;
+  line-height: 0.76;
+  letter-spacing: -0.075em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgb(99 76 50 / 0.16);
+}
+
+.resume-header__meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px 18px;
+  margin-top: 31px;
+  font-size: 10px;
+}
+
+.resume-header__meta a,
+.resume-header__meta span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: inherit;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+}
+
+.resume-header__meta a:hover { text-decoration: underline; }
+.resume-header__meta svg { width: 12px; height: 12px; flex: none; }
+
+.resume-rule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 18px;
+  color: var(--ink-faded);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  white-space: nowrap;
+}
+
+.resume-rule::after {
+  content: "";
+  width: 100%;
+  border-top: 1px dashed rgb(47 41 33 / 0.52);
+}
+
+.resume-rule--minor { margin-top: 27px; }
+
+.resume-intro {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 24px;
+  margin-bottom: 39px;
+}
+
+.resume-intro p {
+  max-width: 65ch;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.resume-download {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 9px;
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  text-decoration: none;
+  font-size: 9px;
+  font-weight: 700;
+  box-shadow: 2px 2px 0 var(--ink);
+}
+
+.resume-download:hover { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
+.resume-download svg { width: 12px; height: 12px; }
+
+.resume-job {
+  display: grid;
+  grid-template-columns: 35px 1fr;
+  gap: 18px;
+  padding: 5px 0 31px;
+}
+
+.resume-job__number,
+.resume-project__index {
+  color: var(--stamp);
+  font-family: Georgia, serif;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+.resume-job__heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.resume-job h2,
+.resume-project h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.resume-job h3 {
+  margin: 4px 0 0;
+  color: var(--ink-faded);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.resume-job__heading > p {
+  margin: 1px 0 0;
+  color: var(--ink-faded);
+  font-size: 8px;
+  line-height: 1.55;
+  text-align: right;
+}
+
+.resume-job ul {
+  margin: 14px 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.resume-job li {
+  position: relative;
+  margin: 7px 0;
+  padding-left: 15px;
+  font-size: 10px;
+  line-height: 1.52;
+}
+
+.resume-job li::before { content: "—"; position: absolute; left: 0; }
+
+.resume-stack {
+  margin: 0;
+  color: var(--ink-faded);
+  font-size: 8px !important;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.5;
+}
+
+.resume-projects {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-bottom: 39px;
+  border: 1px solid rgb(42 36 29 / 0.5);
+  background: rgb(42 36 29 / 0.5);
+}
+
+.resume-project {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 12px;
+  min-height: 180px;
+  padding: 18px;
+  background: var(--paper);
+}
+
+.resume-project:last-child { grid-column: 1 / -1; min-height: auto; }
+
+.resume-project__title {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.resume-project__title > div { display: flex; gap: 7px; }
+
+.resume-project a {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  color: var(--ink);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.resume-project a svg { width: 10px; height: 10px; }
+
+.resume-project > div > p:not(.resume-stack) {
+  margin: 13px 0 12px;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.resume-heatmap {
+  margin: 0 0 38px;
+  padding: 13px 12px 10px;
+  border: 1px solid rgb(42 36 29 / 0.42);
+  background: rgb(255 255 255 / 0.12);
+}
+
+.resume-heatmap img {
+  display: block;
+  width: 100%;
+  height: auto;
+  mix-blend-mode: multiply;
+  filter: saturate(0.82) contrast(1.06);
+}
+
+.resume-heatmap figcaption {
+  margin-top: 8px;
+  color: var(--ink-faded);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-align: right;
+}
+
+.resume-paper__columns {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 38px;
+}
+
+.resume-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.resume-skills span {
+  padding: 4px 6px;
+  border: 1px solid rgb(47 41 33 / 0.5);
+  font-size: 8px;
+}
+
+.resume-note { display: grid; gap: 7px; font-size: 9px; line-height: 1.45; }
+.resume-note strong { font-family: Georgia, serif; font-size: 13px; }
+.resume-note span { color: var(--ink-faded); }
+
+.resume-field-notes {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 16px;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.resume-footer {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 24px;
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 2px solid var(--ink);
+}
+
+.resume-stamp {
+  display: grid;
+  width: 80px;
+  height: 56px;
+  place-items: center;
+  color: var(--stamp);
+  border: 3px double var(--stamp);
+  transform: rotate(-4deg);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.resume-footer div { text-align: center; }
+.resume-footer p { margin: 0 0 6px; color: var(--ink-faded); font-size: 8px; }
+.resume-footer a { color: var(--ink); font-family: Georgia, serif; font-size: 13px; font-weight: 700; }
+.resume-footer > span:last-child { font-family: Georgia, serif; font-size: 17px; font-weight: 900; text-align: center; }
+
+@keyframes typewriter-rattle {
+  0% { transform: translateX(-1px) rotate(-0.08deg); }
+  100% { transform: translateX(1px) rotate(0.08deg); }
+}
+
+@keyframes typewriter-tear-away {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0);
+  }
+  18% {
+    opacity: 1;
+    transform: translate(8px, 23px) rotate(0.8deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(112vw, 105px) rotate(8deg);
+  }
+}
+
+@media (max-width: 700px) {
+  .typewriter-stage { padding-top: 27vh; padding-inline: 0; }
+  .typewriter-machine { width: 96vw; }
+  .typewriter-housing { padding-inline: 13px; }
+  .typewriter-housing__topline { grid-template-columns: 1fr auto; font-size: 7px; }
+  .typewriter-housing__topline > :last-child { display: none; }
+  .typewriter-keyboard { grid-template-columns: 1fr 64px; padding-inline: 3px; }
+  .typewriter-keys { gap: 6px; max-width: 270px; }
+  .typewriter-keys span { width: 22px; height: 22px; font-size: 8px; }
+  .typewriter-return { width: 61px; height: 48px; }
+  .paper-feed { width: 94vw; }
+  .paper-feed__clip { padding-inline: 5px; }
+  .resume-paper__inner { padding-inline: 31px; }
+  .resume-header__meta,
+  .resume-intro,
+  .resume-paper__columns { grid-template-columns: 1fr; }
+  .resume-intro { gap: 15px; }
+  .resume-download { width: fit-content; }
+  .resume-projects { grid-template-columns: 1fr; }
+  .resume-project:last-child { grid-column: auto; }
+  .resume-job { grid-template-columns: 26px 1fr; gap: 10px; }
+  .resume-job__heading { display: grid; }
+  .resume-job__heading > p { text-align: left; }
+  .resume-project { grid-template-columns: 25px 1fr; padding: 14px 11px; }
+  .resume-project__title { display: grid; }
+  .resume-footer { grid-template-columns: 1fr; justify-items: center; }
+  .resume-footer > span:last-child { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paper-feed { transition-duration: 1ms; }
+  .typewriter-world--printing .typewriter-machine,
+  .typewriter-world--tearing .resume-paper { animation-duration: 1ms; }
+}
+
+@media print {
+  .signature-curtain,
+  .typewriter-machine,
+  .typewriter-ambient { display: none !important; }
+  .typewriter-world { background: white; }
+  .typewriter-stage { width: 100%; padding: 0; }
+  .paper-feed { display: block; width: 100%; margin: 0; }
+  .paper-feed__clip { overflow: visible; padding: 0; }
+  .resume-paper { box-shadow: none; }
+}
