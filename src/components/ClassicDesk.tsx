@@ -88,6 +88,7 @@ function playBoxSound(context: AudioContext, direction: "pack" | "unpack") {
 export function ClassicDesk() {
   const [mode, setMode] = useState<DeskMode>("typewriter");
   const [swapPhase, setSwapPhase] = useState<SwapPhase>("idle");
+  const [typewriterUnlocked, setTypewriterUnlocked] = useState(false);
   const swapTimer = useRef<number>();
   const finishTimer = useRef<number>();
   const boxAudioRef = useRef<AudioContext>();
@@ -143,7 +144,13 @@ export function ClassicDesk() {
 
       <div className={`classic-desk__scene classic-desk__scene--${swapPhase}`} key={mode}>
         <Suspense fallback={<span className="classic-desk__loading">UNPACKING…</span>}>
-          {mode === "typewriter" ? <TypewriterPortfolio onNavigate={selectObject} /> : null}
+          {mode === "typewriter" ? (
+            <TypewriterPortfolio
+              isUnlocked={typewriterUnlocked}
+              onUnlock={() => setTypewriterUnlocked(true)}
+              onNavigate={selectObject}
+            />
+          ) : null}
           {mode === "cassette" ? (
             <CassettePlayer tracks={musicLibrary} onNavigate={selectObject} />
           ) : null}
@@ -156,13 +163,14 @@ export function ClassicDesk() {
           <div className="object-box object-box--rear">
             <div className="object-box__back-flap" />
             <div className="object-box__inside" />
-            <div className="object-box__left-flap" />
-            <div className="object-box__right-flap" />
           </div>
           <div className="object-box object-box--front">
+            <div className="object-box__left-flap" />
+            <div className="object-box__right-flap" />
+            <div className="object-box__front-flap" />
             <div className="object-box__front">
-              <span>SG–26</span>
-              <strong>PERSONAL EFFECTS</strong>
+              <span>SIDDHANT</span>
+              <strong>PERSONAL ARTIFACT</strong>
               <small>HANDLE WITH CURIOSITY</small>
             </div>
           </div>
