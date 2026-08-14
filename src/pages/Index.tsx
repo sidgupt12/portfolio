@@ -1,12 +1,12 @@
-import { ModernPortfolio } from "@/components/ModernPortfolio";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { ClassicDesk } from "@/components/ClassicDesk";
+import { SignatureCurtain } from "@/components/SignatureCurtain";
 
 const Index = () => {
   return (
-    <div className="relative">
-      <ThemeToggle />
-      <ModernPortfolio />
-    </div>
+    <>
+      <SignatureCurtain />
+      <ClassicDesk />
+    </>
   );
 };
 

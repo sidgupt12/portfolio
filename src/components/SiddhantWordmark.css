@@ -1,0 +1,28 @@
+.siddhant-wordmark {
+  display: inline-grid;
+  width: max-content;
+  line-height: 1;
+}
+
+.siddhant-wordmark__script {
+  color: transparent;
+  background: linear-gradient(
+    180deg,
+    #f8f8f6 0%,
+    #b9b8b4 24%,
+    #ffffff 43%,
+    #75736f 61%,
+    #deddd9 82%,
+    #8a8782 100%
+  );
+  background-clip: text;
+  filter: drop-shadow(0 2px 1px rgb(0 0 0 / 0.72));
+  font-family: "Snell Roundhand", "Bickham Script Pro 3", "Segoe Script",
+    "Brush Script MT", cursive;
+  font-size: 34px;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.08em;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
