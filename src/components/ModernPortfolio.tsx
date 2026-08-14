@@ -16,76 +16,6 @@ export function ModernPortfolio() {
   const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set());
   const [activeSection, setActiveSection] = useState<number>(0);
   const [scrollProgress, setScrollProgress] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [currentWelcomeIndex, setCurrentWelcomeIndex] = useState<number>(0);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-
-  const welcomeMessages = [
-    { text: "Welcome", lang: "English" },
-    { text: "स्वागत", lang: "Hindi" },
-    { text: "いらっしゃいませ", lang: "Japanese" },
-    { text: "خوش آمدید", lang: "Persian" }
-  ];
-
-  useEffect(() => {
-    // Theme detection logic
-    const detectTheme = () => {
-      const savedTheme = localStorage.getItem("theme");
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-      const currentTheme = savedTheme || systemTheme;
-      setIsDarkMode(currentTheme === "dark");
-      
-      // Also check for the 'dark' class on document element
-      const isDark = document.documentElement.classList.contains("dark");
-      setIsDarkMode(isDark);
-    };
-
-    // Initial theme detection
-    detectTheme();
-
-    // Listen for theme changes
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-          const isDark = document.documentElement.classList.contains("dark");
-          setIsDarkMode(isDark);
-        }
-      });
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    // Preloader logic
-    const welcomeInterval = setInterval(() => {
-      setCurrentWelcomeIndex((prev) => (prev + 1) % welcomeMessages.length);
-    }, 500); // Change welcome message every 500ms
-
-    // Minimum loading time and actual loading completion
-    const minLoadTime = new Promise(resolve => setTimeout(resolve, 2000)); // 4 cycles of welcome messages
-    const actualLoad = new Promise(resolve => {
-      if (document.readyState === 'complete') {
-        resolve(true);
-      } else {
-        window.addEventListener('load', () => resolve(true));
-      }
-    });
-
-    Promise.all([minLoadTime, actualLoad]).then(() => {
-      clearInterval(welcomeInterval);
-      // Add a small delay before starting the curtain animation
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 300);
-    });
-
-    return () => {
-      clearInterval(welcomeInterval);
-      observer.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -257,35 +187,6 @@ export function ModernPortfolio() {
 
   return (
     <>
-      {/* Curtain Preloader */}
-      {isLoading && (
-        <div className={`fixed inset-0 z-[100] flex items-center justify-center ${isDarkMode ? 'bg-white' : 'bg-black'}`}>
-          {/* Welcome Message */}
-          <div className="relative z-10 text-center">
-            <h1 
-              key={currentWelcomeIndex}
-              className={`text-4xl md:text-6xl font-bold bg-gradient-to-r ${
-                isDarkMode 
-                  ? 'from-black to-gray-800 bg-clip-text text-transparent' 
-                  : 'from-white to-gray-300 bg-clip-text text-transparent'
-              } animate-pulse`}
-            >
-              {welcomeMessages[currentWelcomeIndex].text}
-            </h1>
-            <p className={`text-sm mt-2 opacity-60 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`}>
-              {welcomeMessages[currentWelcomeIndex].lang}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Curtain Reveal Animation */}
-      <div 
-        className={`fixed inset-0 z-[99] ${isDarkMode ? 'bg-white' : 'bg-black'} transition-transform duration-1500 ease-in-out ${
-          isLoading ? 'translate-y-0' : '-translate-y-full'
-        }`}
-      />
-
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
         {/* Reading Progress Bar */}
         <div className="fixed top-0 left-0 w-full h-1 bg-muted/20 z-40">
