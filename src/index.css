@@ -73,3 +73,39 @@ button.footer-hello:hover{color:var(--accent)}
 .lantern-cameo figcaption{color:var(--muted);font-size:7px;max-width:110px;line-height:1.5}
 @media(max-width:700px){footer{flex-wrap:wrap;gap:24px}.lantern-cameo{margin-left:auto}.footer-links{flex-basis:100%;display:flex;flex-wrap:wrap}}
 @media(max-width:480px){footer{display:grid;grid-template-columns:1fr auto}.footer-hello{font-size:21px}.lantern-cameo img{width:76px;height:44px}.lantern-cameo figcaption{max-width:80px;font-size:7px}.footer-links{grid-column:1/-1}}
+
+/* Keep decorative asterisks as text instead of mobile color emoji. */
+.hero-spark,.forget .art-symbol{font-variant-emoji:text}
+
+/* Give phone layouts room without changing the desktop composition. */
+@media(max-width:480px){
+ .site-shell{padding-inline:24px}
+ header{height:92px}
+ nav{gap:22px}
+ .hero{padding:40px 0 64px}
+ .hero-title{height:180px;margin:20px 0 48px}
+ h1{font-size:clamp(112px,32vw,145px);letter-spacing:-.095em}
+ .batman{width:clamp(116px,31vw,140px);flex-shrink:0;margin-left:12px}
+ .batman img{height:auto;aspect-ratio:1.55;object-fit:cover}
+ .hero-spark{right:clamp(120px,32vw,147px);top:4px}
+ .name-note{width:140px;line-height:1.7}
+ .hero h2{font-size:clamp(21px,5.5vw,25px);line-height:1.5;letter-spacing:-.6px}
+ .hero-copy{margin:24px 0 30px;font-size:15px;line-height:1.8}
+ .hero>.hero-links{display:grid;grid-template-columns:repeat(3,max-content);column-gap:24px;row-gap:24px}
+ .hero>.hero-links .dopamine-link{grid-column:1/-1;justify-self:start}
+ section:not(.hero){padding-top:36px;margin-bottom:64px}
+ .section-heading{margin-bottom:30px}
+ .featured-copy{padding-top:24px}
+ .project-grid{margin-top:36px;gap:32px}
+ .small-project{grid-template-columns:96px minmax(0,1fr);column-gap:20px}
+ .small-project h3{margin:8px 0 0;gap:8px;line-height:1.5}
+ .small-project p{font-size:13px;line-height:1.75;margin-top:8px}
+ .about-grid{gap:36px}
+ .training{padding:22px}
+ .music-layout{gap:28px}
+ .track-list button{padding:16px 10px}
+ .commit-reaction{align-items:flex-start;gap:16px}
+ footer{row-gap:30px}
+ .footer-links{gap:24px}
+ .endnote{gap:16px;line-height:1.8}
+}
